@@ -38,10 +38,8 @@ class QuantLibQuoteAssistant:
         self.index = QuantLibIndex(db_path=db_path, k_default=k_default)
         self.retriever = self.index.get_retriever()
 
-        self.llm_en = ChatOllama(
-            model=llm_model,
-            temperature=temperature,
-        )
+
+        
         if llm is not None:
             self.llm_en = llm
         else:
