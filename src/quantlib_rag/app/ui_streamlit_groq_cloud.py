@@ -65,7 +65,7 @@ def check_password() -> bool:
 def get_groq_assistant() -> QuantLibQuoteAssistant:
     if "ql_groq_assistant" not in st.session_state:
         # 🔥 tu dbamy o docs + index
-        ensure_docs_and_index()
+        #ensure_docs_and_index()
 
         llm = create_groq_llm(
             model="llama-3.1-8b-instant",

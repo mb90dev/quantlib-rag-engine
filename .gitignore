@@ -15,5 +15,5 @@ Thumbs.db
 
 .streamlit/
 
-data/
-db/
+#data/
+#db/
