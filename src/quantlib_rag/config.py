@@ -1,5 +1,5 @@
 from pathlib import Path
-
+import os
 # ---------------------------------------------------------
 # PROJECT ROOT
 # ---------------------------------------------------------
@@ -54,3 +54,9 @@ DEFAULT_CHUNK_OVERLAP = 200
 
 # ile dokumentów pobiera retriever
 DEFAULT_K = 5
+QDRANT_URL = os.getenv("QDRANT_URL", "")
+QDRANT_API_KEY = os.getenv("QDRANT_API_KEY", "")
+QDRANT_COLLECTION = "quantlib-rag-engine"
+
+# Gemini embeddings
+GEMINI_EMBED_MODEL = "gemini-embedding-001"
