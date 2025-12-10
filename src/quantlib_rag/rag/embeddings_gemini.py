@@ -11,7 +11,7 @@ def create_gemini_embeddings() -> GoogleGenerativeAIEmbeddings:
     Embeddingi oparte o Google Gemini (gemini-embedding-001).
     Wymaga GOOGLE_API_KEY w env / secrets.
     """
-    api_key = os.environ.get("GOOGLE_API_KEY") or st.secrets.get("GROQ_API_KEY", None)
+    api_key = os.environ.get("GOOGLE_API_KEY") or st.secrets.get("GOOGLE_API_KEY", None)
 
     if not api_key:
         raise RuntimeError("GOOGLE_API_KEY is not set")
