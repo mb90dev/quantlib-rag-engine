@@ -1,7 +1,7 @@
 # src/quantlib_rag/app/ui_streamlit_cloud_qdrant.py
 
 import streamlit as st
-
+import os
 from src.quantlib_rag.rag.quantlib_cloud_assistant import QuantLibCloudAssistant
 
 
@@ -43,7 +43,10 @@ def main():
 
         st.subheader("📂 Sources")
         for s in res["sources"]:
-            st.markdown(f"- `{s['source']}`")
+            source = s.get("source", "")
+            short = os.path.basename(source)
+            st.markdown(f"- `{short}`")
+            #st.markdown(f"- `{s['source']}`")
 
 
 if __name__ == "__main__":
