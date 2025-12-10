@@ -125,6 +125,13 @@ class QuantLibQdrantIndexBuilder:
         )
 
         # 3) Dodajemy dokumenty
+        processed = []
+        for d in chunks:
+
+            processed.append({
+                "page_content": d.page_content,
+                "metadata": {k: str(v) for k, v in d.metadata.items()}  # Qdrant only likes strings
+            })
         vectorstore.add_documents(chunks)
 
         print("[INFO] Qdrant index built.")
