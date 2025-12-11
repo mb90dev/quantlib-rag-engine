@@ -27,8 +27,10 @@ DB_DIR = PROJECT_ROOT / "db"
 
 # domyślna lokalizacja Chroma z embeddingami BGE-M3
 CHROMA_BGE_MD = DB_DIR / "quantlib_chroma_bge_md"
-
-
+CACHE_DIR = DB_DIR / "cache"
+LOCAL_MISTRAL_CACHE = CACHE_DIR / "local_mistral_cache.json"
+SEMANTIC_CACHE_DIR = CACHE_DIR / "semantic_cache"
+SEMANTIC_CACHE_THRESHOLD = 0.85
 # ---------------------------------------------------------
 # MODELS / EMBEDDINGS
 # ---------------------------------------------------------
@@ -48,7 +50,7 @@ MARKDOWN_HEADERS = [
     ("###", "h3"),
 ]
 
-# jeśli będziesz używać klasycznego chunkera
+# jeśli używasz klasycznego chunkera
 DEFAULT_CHUNK_SIZE = 1200
 DEFAULT_CHUNK_OVERLAP = 200
 

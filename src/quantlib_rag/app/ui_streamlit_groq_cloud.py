@@ -5,7 +5,7 @@ from src.quantlib_rag import config
 from src.quantlib_rag.ingestion.download_quantlib_docs import QuantLibDocsDownloader
 from src.quantlib_rag.ingestion.build_index import QuantLibMarkdownIndexBuilder
 from src.quantlib_rag.rag.llm_groq import create_groq_llm
-from src.quantlib_rag.rag.quantlib_assistant import QuantLibQuoteAssistant
+from quantlib_rag.rag.quantlib_assistant import QuantLibQuoteAssistant
 
 
 # --------- HELPERY: DOCS + INDEX ---------

@@ -1,6 +1,5 @@
-# src/quantlib_rag/rag/quantlib_cloud_assistant.py
-
 import os
+import re
 from typing import Any, Dict, List, Optional
 
 from langchain_core.documents import Document
@@ -34,10 +33,15 @@ class QuantLibCloudAssistant:
             temperature=temperature,
         )
 
+    # ---------- INTERNAL UTILS ----------
+
     @staticmethod
     def _format_context(docs: List[Document], max_chars_per_doc: int = 800) -> str:
+        """Składa context z kilku chunków, każdy przycięty osobno."""
         snippets = [d.page_content[:max_chars_per_doc] for d in docs]
         return "\n\n--- DOC SPLIT ---\n\n".join(snippets)
+
+    # ---------- GŁÓWNA METODA: QUOTE-ONLY ----------
 
     def quote_only_answer(
         self,
@@ -45,10 +49,17 @@ class QuantLibCloudAssistant:
         k: Optional[int] = None,
         max_chars_per_doc: int = 800,
     ) -> Dict[str, Any]:
+        """
+        Tryb: LLM jako 'inteligentny filtr':
+        - MA PRAWO TYLKO CYTOWAĆ / LEKKO PRZEPISAĆ fragmenty kontekstu
+        - NIE WOLNO mu dodawać nowych API
+        """
         if k is None:
             k = self.k_default
 
-        docs = self.retriever.invoke(question_en)
+        # ważne: retriever zależny od k (spójne z evaluatorem)
+        retriever = self.index.get_retriever(k=k)
+        docs = retriever.invoke(question_en)
 
         if not docs:
             return {
@@ -98,4 +109,60 @@ class QuantLibCloudAssistant:
             "question_en": question_en,
             "answer_en": answer,
             "sources": sources,
+        }
+
+    # ---------- DEBUG / EVAL: ANSWER VS CONTEXT ----------
+
+    def analyze_answer_vs_context(
+        self,
+        question_en: str,
+        answer: str,
+        k: Optional[int] = None,
+        max_chars_per_doc: Optional[int] = None,
+    ) -> Dict[str, Any]:
+        """
+        Analizuje:
+        - jaki % słów z odpowiedzi występuje w kontekście (overlap)
+        - jakie symbole ql.* pojawiają się w odpowiedzi
+        - które z nich są też w kontekście (API z dokumentacji),
+          a które tylko w odpowiedzi (potencjalna halucynacja).
+        """
+        if k is None:
+            k = self.k_default
+
+        retriever = self.index.get_retriever(k=k)
+        docs = retriever.invoke(question_en)
+        docs = docs[:k]
+
+        if max_chars_per_doc is None:
+            parts = [d.page_content for d in docs]
+        else:
+            parts = [d.page_content[:max_chars_per_doc] for d in docs]
+
+        context_text = "\n\n--- DOC SPLIT ---\n\n".join(parts)
+
+        answer_tokens = set(re.findall(r"\w+", answer.lower()))
+        context_tokens = set(re.findall(r"\w+", context_text.lower()))
+
+        if answer_tokens:
+            overlap = len(answer_tokens & context_tokens) / len(answer_tokens) * 100
+        else:
+            overlap = 0.0
+
+        api_in_answer = set(re.findall(r"ql\.\w+", answer))
+        api_in_context = set(re.findall(r"ql\.\w+", context_text))
+
+        api_only_in_answer = api_in_answer - api_in_context
+        api_in_both = api_in_answer & api_in_context
+
+        return {
+            "question": question_en,
+            "answer": answer,
+            "overlap_percent": overlap,
+            "api_in_answer": api_in_answer,
+            "api_in_context": api_in_context,
+            "api_only_in_answer": api_only_in_answer,
+            "api_in_both": api_in_both,
+            "docs": docs,
+            "context_text": context_text,
         }

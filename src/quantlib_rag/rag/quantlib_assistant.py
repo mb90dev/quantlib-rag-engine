@@ -1,15 +1,69 @@
-# src/rag/quantlib_quote_assistant.py 
-
 import os
 import re
+import json
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from langchain_ollama import ChatOllama
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_core.documents import Document
 
+from .semantic_cache import SemanticAnswerCache
 from .quantlib_index import QuantLibIndex
 from ..config import *
+
+
+class SimpleAnswerCache:
+    """
+    Bardzo prosty cache odpowiedzi LLM:
+    - trzyma dane w słowniku w pamięci
+    - zapisuje/ładuje całość do jednego pliku JSON
+    - klucz = (normalized_question, k, mode)
+    """
+
+    def __init__(self, path: Optional[str | os.PathLike] = None) -> None:
+        self.path = Path(path) if path is not None else None
+        self._data: Dict[str, Dict[str, Any]] = {}
+
+        if self.path is not None and self.path.exists():
+            try:
+                with self.path.open("r", encoding="utf-8") as f:
+                    self._data = json.load(f)
+            except Exception:
+                # jak plik uszkodzony/pusty – zaczynamy od zera
+                self._data = {}
+
+    @staticmethod
+    def _make_key(
+        normalized_question: str,
+        k: int,
+        mode: str = "quote_only",
+    ) -> str:
+        # prosta postać klucza – wystarczy
+        return f"{mode}||k={k}||{normalized_question}"
+
+    def get(
+        self,
+        normalized_question: str,
+        k: int,
+        mode: str = "quote_only",
+    ) -> Optional[Dict[str, Any]]:
+        key = self._make_key(normalized_question, k, mode)
+        return self._data.get(key)
+
+    def set(
+        self,
+        normalized_question: str,
+        k: int,
+        value: Dict[str, Any],
+        mode: str = "quote_only",
+    ) -> None:
+        key = self._make_key(normalized_question, k, mode)
+        self._data[key] = value
+
+        if self.path is not None:
+            with self.path.open("w", encoding="utf-8") as f:
+                json.dump(self._data, f, ensure_ascii=False, indent=2)
 
 
 class QuantLibQuoteAssistant:
@@ -21,7 +75,7 @@ class QuantLibQuoteAssistant:
     - ChatOllama(model="mistral", temperature=0.0)
 
     Metody:
-    - quote_only_answer(...)          -> LLM TYLKO cytuje kontekst
+    - quote_only_answer(...)          -> LLM TYLKO cytuje kontekst (z cache 1:1 + semantic)
     - debug_retrieval(...)            -> podgląd, co zwraca retriever
     - analyze_answer_vs_context(...)  -> ile odpowiedzi jest z docs, a ile z 'głowy'
     """
@@ -32,23 +86,36 @@ class QuantLibQuoteAssistant:
         llm_model: str = "mistral",
         temperature: float = 0.0,
         k_default: int = DEFAULT_K,
-        llm = None
+        llm=None,
+        cache_path: Optional[str | os.PathLike] = LOCAL_MISTRAL_CACHE,
+        use_semantic_cache: bool = True,
     ) -> None:
         # Index + retriever
         self.index = QuantLibIndex(db_path=db_path, k_default=k_default)
         self.retriever = self.index.get_retriever()
 
-
-        
         if llm is not None:
             self.llm_en = llm
         else:
             self.llm_en = ChatOllama(
                 model=llm_model,
                 temperature=temperature,
-            )  
+            )
 
         self.k_default = k_default
+
+        # prosty cache 1:1 na odpowiedzi (możesz wyłączyć cache_path=None)
+        self.answer_cache = SimpleAnswerCache(cache_path) if cache_path is not None else None
+
+        # semantic cache (Chroma + te same embeddingi BGE co index)
+        self.semantic_cache: Optional[SemanticAnswerCache] = None
+        if use_semantic_cache:
+            # SEMANTIC_CACHE_DIR i SEMANTIC_CACHE_THRESHOLD powinny być w config.py
+            self.semantic_cache = SemanticAnswerCache(
+                persist_dir=SEMANTIC_CACHE_DIR,
+                embeddings=self.index.embeddings,
+                score_threshold=SEMANTIC_CACHE_THRESHOLD,
+            )
 
     # ---------- INTERNAL UTILS ----------
 
@@ -57,6 +124,26 @@ class QuantLibQuoteAssistant:
         """Składa context z kilku chunków, każdy przycięty osobno."""
         snippets = [d.page_content[:max_chars_per_doc] for d in docs]
         return "\n\n--- DOC SPLIT ---\n\n".join(snippets)
+
+    @staticmethod
+    def _normalize_question(question: str) -> str:
+        """
+        Normalizacja pytania do celu cache:
+        - strip spacji
+        - lowercase
+        - usunięcie końcowych ? ! .
+        - redukcja wielu spacji do jednej
+        """
+        q = question.strip().lower()
+
+        # usuń ? ! . z końca (tylko ogon, nie ze środka)
+        while len(q) > 0 and q[-1] in ["?", "!", "."]:
+            q = q[:-1]
+
+        # redukcja wielu spacji
+        q = re.sub(r"\s+", " ", q)
+
+        return q
 
     # ---------- GŁÓWNA METODA: QUOTE-ONLY ----------
 
@@ -70,19 +157,52 @@ class QuantLibQuoteAssistant:
         Tryb: LLM jako 'inteligentny filtr':
         - MA PRAWO TYLKO CYTOWAĆ fragmenty kontekstu
         - NIE WOLNO mu dodawać nowego kodu ani tekstu
+        - Cache 1:1 po (normalized_question, k, mode="quote_only")
+        - Semantic cache na bazie embeddingów (pytania „na to samo”)
         """
         if k is None:
             k = self.k_default
 
+        normalized_q = self._normalize_question(question_en)
+
+        # ---- 1. EXACT CACHE (1:1 JSON) ----
+        if self.answer_cache is not None:
+            cached = self.answer_cache.get(normalized_q, k, mode="quote_only")
+            if cached is not None:
+                print("[EXACT CACHE HIT] returning answer from JSON cache")
+                return cached
+            else:
+                print("[EXACT CACHE MISS] no entry in JSON cache")
+
+        # ---- 2. SEMANTIC CACHE (embeddingi BGE, Q ↔ Q) ----
+        if self.semantic_cache is not None:
+            sem_hit = self.semantic_cache.get(question_en)
+            if sem_hit is not None:
+                print("[SEMANTIC CACHE USED] returning semantically cached answer")
+                # opcjonalnie dociśnij do exact cache dla tego konkretnego k
+                if self.answer_cache is not None:
+                    self.answer_cache.set(normalized_q, k, sem_hit, mode="quote_only")
+                return sem_hit
+            else:
+                print("[SEMANTIC CACHE MISS] no suitable semantic match")
+
+        # ---- 3. NORMALNY FLOW (retriever + LLM) ----
         retriever = self.index.get_retriever(k=k)
         docs = retriever.invoke(question_en)
 
         if not docs:
-            return {
+            result = {
                 "question_en": question_en,
                 "answer_en": "I couldn't find any relevant context in the documentation.",
                 "sources": [],
             }
+            if self.answer_cache is not None:
+                print("[EXACT CACHE STORE] saving 'no context' answer to JSON cache")
+                self.answer_cache.set(normalized_q, k, result, mode="quote_only")
+            if self.semantic_cache is not None:
+                print("[SEMANTIC CACHE STORE] saving 'no context' answer to semantic cache")
+                self.semantic_cache.set(question_en, result)
+            return result
 
         context = self._format_context(docs, max_chars_per_doc=max_chars_per_doc)
 
@@ -123,11 +243,22 @@ class QuantLibQuoteAssistant:
             for d in docs[:k]
         ]
 
-        return {
+        result = {
             "question_en": question_en,
             "answer_en": answer,
             "sources": sources,
         }
+
+        # ---- 4. ZAPIS DO CACHE'Y ----
+        if self.answer_cache is not None:
+            print("[EXACT CACHE STORE] saving answer to JSON cache")
+            self.answer_cache.set(normalized_q, k, result, mode="quote_only")
+
+        if self.semantic_cache is not None:
+            print("[SEMANTIC CACHE STORE] saving answer to semantic cache")
+            self.semantic_cache.set(question_en, result)
+
+        return result
 
     # ---------- DEBUG: RETRIEVER ----------
 

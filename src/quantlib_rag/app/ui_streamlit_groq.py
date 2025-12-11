@@ -4,7 +4,7 @@ import os
 
 import streamlit as st
 
-from src.quantlib_rag.rag.quantlib_assistant import QuantLibQuoteAssistant
+from quantlib_rag.rag.quantlib_assistant import QuantLibQuoteAssistant
 from src.quantlib_rag.rag.llm_groq import create_groq_llm
 
 

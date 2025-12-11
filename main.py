@@ -30,7 +30,7 @@ def run_streamlit():
 
     print("\n[INFO] Launching Streamlit UI...\n")
     subprocess.run(
-        [sys.executable, "-m", "streamlit", "run", "src/quantlib_rag/app/ui_streamlit_groq.py"]
+        [sys.executable, "-m", "streamlit", "run", "src/quantlib_rag/app/ui_streamlit_cloud_langraph.py"]
     )
 
 

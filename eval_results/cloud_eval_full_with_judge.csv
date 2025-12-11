@@ -1,0 +1,293 @@
+backend,question,gold_source,hit_at_k,faithfulness,helpfulness,judge_notes,latency_retrieval_ms,latency_llm_ms,overlap_percent,api_only_in_answer,answer_en
+cloud,How do I set up the evaluation date in QuantLib?,basics.md,1,,,"judge_invoke_error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}",332.38959312438965,729.428768157959,90.0,[],"To set up the evaluation date in QuantLib, you can use the following code:
+
+```python
+import QuantLib as ql
+
+today = ql.Date(15,6,2020)
+ql.Settings.instance().evaluationDate = today
+print(ql.Settings.instance().evaluationDate);
+```
+
+Alternatively, you can also set the evaluation date as follows:
+
+```python
+today = ql.Date(15,12,2021);
+ql.Settings.instance().evaluationDate = today
+```"
+cloud,Which core QuantLib types are typically used when starting a simple pricing example?,basics.md,1,,,"judge_invoke_error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}",298.8295555114746,883.6109638214111,67.53246753246754,"['ql.ReliakableHandle', 'ql.Handle']","When starting a simple pricing example in QuantLib, the following core types are typically used:
+
+- `ql.Date`: used to represent dates, such as the evaluation date, issue date, and maturity date.
+- `ql.Period`: used to represent time periods, such as the coupon period.
+- `ql.FixedRateLeg`: used to represent a fixed-rate leg of a bond.
+- `ql.Bond`: used to represent a bond.
+- `ql.SimpleQuote`: used to represent a simple quote, such as a bond price or yield.
+- `ql.YieldTermStructureHandle`: used to represent a yield term structure, such as a risk-free rate or dividend yield.
+- `ql.BlackVolTermStructureHandle`: used to represent a volatility term structure.
+- `ql.QuoteHandle`: used to represent a quote, such as a stock price or volatility.
+- `ql.BlackScholesMertonProcess`: used to represent a Black-Scholes-Merton process, which is used to price options.
+- `ql.AnalyticEuropeanEngine`: used to price European options using an analytic engine.
+- `ql.MCEuropeanEngine`: used to price European options using a Monte Carlo engine.
+- `ql.Handle`: used to represent a handle, which is a wrapper around a shared pointer.
+- `ql.ReliakableHandle`: used to represent a relinkable handle, which is a non-const handle."
+cloud,How do I create a QuantLib Date and convert it from a Python datetime?,dates.md,1,,,"judge_invoke_error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}",284.49344635009766,890.3450965881348,79.3103448275862,[],"To create a QuantLib Date and convert it from a Python datetime, you can use the following methods:
+
+### Creating a QuantLib Date
+
+You can create a QuantLib Date using the following constructors:
+
+```python
+ql.Date(
+    serialNumber
+)
+
+ql.Date(
+    day,
+    month,
+    year
+)
+
+ql.Date(
+    dateString,
+    formatString
+)
+```
+
+Examples:
+
+```python
+ql.Date(44000)
+ql.Date(18, 6, 2020)
+ql.Date(18, ql.June, 2020)
+ql.Date('18-06-2020', '%d-%m-%Y')
+```
+
+### Converting a Python datetime to a QuantLib Date
+
+You can set the evaluation date in QuantLib using the following code:
+
+```python
+import QuantLib as ql
+today = ql.Date(15,6,2020)
+ql.Settings.instance().evaluationDate = today
+```
+
+This sets the evaluation date to June 15th, 2020. You can replace the `today` variable with a Python datetime object, like this:
+
+```python
+from datetime import datetime
+today = datetime(2020, 6, 15)
+ql.Settings.instance().evaluationDate = ql.Date(today.day, today.month, today.year)
+```
+
+This converts the Python datetime object to a QuantLib Date and sets it as the evaluation date."
+cloud,How can I advance a date by a given number of months using QuantLib?,dates.md,1,,,"judge_invoke_error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}",285.85290908813477,779.6907424926758,82.6923076923077,[],"You can advance a date by a given number of months using QuantLib's `ql.Date` class and its `addMonths` method.
+
+```python
+date = ql.Date(15, 6, 2020)
+new_date = date.addMonths(3)
+print(new_date)
+```
+
+Alternatively, you can use the `ql.MakeSchedule` function with the `rule` parameter set to `ql.DateGeneration.Forward` to generate a schedule of dates, and then extract the first date in the schedule.
+
+```python
+effective_date = ql.Date(15, 6, 2020)
+termination_date = ql.Date(15, 6, 2022)
+frequency = ql.Period('6M')
+schedule = ql.MakeSchedule(effective_date, termination_date, frequency, rule=ql.DateGeneration.Forward)
+new_date = schedule[0]
+print(new_date)
+```"
+cloud,How do I build a leg of fixed cashflows in QuantLib?,cashflows.md,1,,,"judge_invoke_error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}",283.8268280029297,1748.4371662139893,91.83673469387756,[],"To build a leg of fixed cashflows in QuantLib, you can use the `Leg` class as shown in the following code:
+
+```python
+date = ql.Date().todaysDate()
+cf1 = ql.SimpleCashFlow(5.0, date+365)
+cf2 = ql.SimpleCashFlow(5.0, date+365*2)
+cf3 = ql.SimpleCashFlow(105.0, date+365*3)
+leg = ql.Leg([cf1, cf2, cf3])
+```
+
+Alternatively, you can use the `FixedRateLeg` class to build a sequence of fixed rate coupons:
+
+```python
+schedule = ql.MakeSchedule(ql.Date(15,6,2020), ql.Date(15,6,2021), ql.Period('6M'))
+dayCount = ql.Actual360()
+leg = ql.FixedRateLeg(schedule, dayCount, [100.], [0.05])
+```"
+cloud,How can I get the payment dates and amounts from a cashflow leg in QuantLib?,cashflows.md,1,,,"judge_invoke_error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}",299.72362518310547,10827.886581420898,35.0,[],"You can get the payment dates and amounts from a cashflow leg in QuantLib using the following methods:
+
+```python
+# Get the payment dates
+ql.CashFlows.startDate(leg)
+ql.CashFlows.maturityDate(leg)
+
+# Get the payment amounts
+# You can access the cash flows directly from the leg
+cf1, cf2, cf3 = leg.cashFlows()
+print(cf1.amount())
+print(cf2.amount())
+print(cf3.amount())
+```
+
+Note that `leg.cashFlows()` returns a list of cash flows, and you can access each cash flow's amount using the `amount()` method."
+cloud,How do I construct an IborIndex in QuantLib?,indexes.md,1,,,"judge_invoke_error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}",302.48022079467773,11837.293148040771,73.91304347826086,"['ql.EUR', 'ql.UnitedStates']","To construct an IborIndex in QuantLib, you can use the `IborIndex` class. Here's how you can do it:
+
+```python
+index = ql.IborIndex(
+    familyName=""Euribor"",
+    tenor=ql.Period(""6M""),
+    settlementDays=0,
+    currency=ql.EUR,
+    fixingCalendar=ql.UnitedStates(),
+    convention=ql.ModifiedFollowing,
+    endOfMonth=True,
+    dayCounter=ql.Actual360(),
+    h=ql.YieldTermStructureHandle()
+)
+```
+
+You can replace the parameters with the values that suit your needs."
+cloud,How can I link an index to a yield term structure in QuantLib?,indexes.md,1,,,"judge_invoke_error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}",303.8065433502197,10181.451082229614,75.9493670886076,"['ql.QuoteHandle', 'ql.Unadjusted', 'ql.UnitedStates', 'ql.FlatForward', 'ql.SimpleQuote']","To link an index to a yield term structure in QuantLib, you can use the `IborIndex` class, which is a base class for Interbank Offered Rate (IBOR) indexes. 
+
+You can create an instance of `IborIndex` and pass a `YieldTermStructureHandle` object to it, like this:
+
+```python
+ibor_index = IborIndex(
+    familyName=""Euribor"",
+    tenor=ql.Period(""3M""),
+    settlementDays=0,
+    currency=ql.Currency(""EUR""),
+    fixingCalendar=ql.UnitedStates(),
+    convention=ql.Unadjusted,
+    endOfMonth=False,
+    dayCounter=ql.Actual360(),
+    h=ql.YieldTermStructureHandle()
+)
+```
+
+In this example, `h` is the `YieldTermStructureHandle` object that is linked to the `IborIndex` instance. 
+
+Note that `YieldTermStructureHandle` is a class that represents a handle to a yield term structure. You can create a `YieldTermStructureHandle` object by passing a `YieldTermStructure` object to it, like this:
+
+```python
+yield_term_structure = ql.FlatForward(
+    ql.QuoteHandle(ql.SimpleQuote(0.05)),
+    ql.Actual360(),
+    ql.Date(1, 1, 2020)
+)
+
+yield_term_structure_handle = ql.YieldTermStructureHandle(yield_term_structure)
+```
+
+In this example, `yield_term_structure` is a `FlatForward` object that represents a flat forward yield curve, and `yield_term_structure_handle` is a `YieldTermStructureHandle` object that is linked to it. 
+
+You can then pass `yield_term_structure_handle` to the `IborIndex` constructor to link the index to the yield term structure."
+cloud,How do I create a simple fixed-rate bond instrument in QuantLib?,instruments.md,1,,,"judge_invoke_error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}",377.06661224365234,11706.315279006958,95.23809523809523,[],"```python
+start = ql.Date(15,12,2019)
+maturity = ql.Date(15,12,2020)
+schedule = ql.MakeSchedule(start, maturity, ql.Period('6M'))
+interest = ql.FixedRateLeg(schedule, ql.Actual360(), [100.], [0.05])
+bond = ql.Bond(0, ql.TARGET(), start, interest)
+```"
+cloud,How can I retrieve the NPV of an instrument after assigning a pricing engine in QuantLib?,instruments.md,0,,,"judge_invoke_error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}",279.38222885131836,12786.663293838501,72.5,[],"You can retrieve the NPV of an instrument after assigning a pricing engine in QuantLib as shown in the following code snippet:
+
+```python
+# Create a pricing engine
+engine = ql.AnalyticEuropeanEngine(process)
+
+# Assign the pricing engine to the instrument
+instrument.setPricingEngine(engine)
+
+# Retrieve the NPV of the instrument
+npv = instrument.NPV()
+print(f""NPV is: {npv:,.2f}"")
+```
+
+This code is based on the example provided in the context for `AnalyticCapFloorEngine`."
+cloud,How do I set a discounting bond pricing engine in QuantLib?,pricing_engines.md,1,,,"judge_invoke_error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}",288.4974479675293,8725.746870040894,59.45945945945946,[],"To set a discounting bond pricing engine in QuantLib, you can use the following code:
+
+```python
+crv = ql.FlatForward(ql.Date().todaysDate(), 0.04875825, ql.Actual365Fixed())
+yts = ql.YieldTermStructureHandle(crv)
+engine = ql.DiscountingBondEngine(yts)
+```
+
+This creates a `DiscountingBondEngine` with a discount curve defined by a flat forward yield curve."
+cloud,Which pricing engines are commonly used for bond and swap pricing in QuantLib?,pricing_engines.md,1,,,"judge_invoke_error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}",368.7450885772705,9787.779569625854,100.0,[],"## Swap Pricing Engines  
+### DiscountingSwapEngine  
+-
+ql.DiscountingSwapEngine(
+*YieldTermStructure*)  
+```
+yts = ql.YieldTermStructureHandle(ql.FlatForward(2, ql.TARGET(), 0.5, ql.Actual360()))
+engine = ql.DiscountingSwapEngine(yts)
+```
+
+## Bond Pricing Engines  
+### DiscountingBondEngine  
+-
+ql.DiscountingBondEngine(
+*discountCurve*)  
+```
+crv = ql.FlatForward(ql.Date().todaysDate(),0.04875825,ql.Actual365Fixed())
+yts = ql.YieldTermStructureHandle(crv)
+engine = ql.DiscountingBondEngine(yts)
+```"
+cloud,How do I build a flat yield term structure in QuantLib?,termstructures.md,1,,,"judge_invoke_error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}",311.2225532531738,11002.464294433594,83.6734693877551,[],"To build a flat yield term structure in QuantLib, you can use the `FlatForward` class. Here are a few examples:
+
+```python
+ql.FlatForward(ql.Date(15,6,2020), ql.QuoteHandle(ql.SimpleQuote(0.05)), ql.Actual360(), ql.Compounded, ql.Annual)
+ql.FlatForward(ql.Date(15,6,2020), ql.QuoteHandle(ql.SimpleQuote(0.05)), ql.Actual360(), ql.Compounded)
+ql.FlatForward(ql.Date(15,6,2020), ql.QuoteHandle(ql.SimpleQuote(0.05)), ql.Actual360())
+ql.FlatForward(2, ql.TARGET(), ql.QuoteHandle(ql.SimpleQuote(0.05)), ql.Actual360())
+ql.FlatForward(2, ql.TARGET(), 0.05, ql.Actual360())
+```
+
+You can also use the `ForwardCurve` class to build a flat yield term structure, but it requires a list of dates and rates:
+
+```python
+dates = [ql.Date(15,6,2020), ql.Date(15,6,2022), ql.Date(15,6,2023)]
+rates = [0.02, 0.03, 0.04]
+ql.ForwardCurve(dates, rates, ql.Actual360(), ql.TARGET())
+ql.ForwardCurve(dates, rates, ql.Actual360())
+```"
+cloud,How can I bootstrap a zero curve from market instruments in QuantLib?,termstructures.md,1,,,"judge_invoke_error: Error code: 400 - {'error': {'message': 'The model `llama-3.1-70b-versatile` has been decommissioned and is no longer supported. Please refer to https://console.groq.com/docs/deprecations for a recommendation on which model to use instead.', 'type': 'invalid_request_error', 'code': 'model_decommissioned'}}",288.1791591644287,15450.201988220215,87.75510204081633,"['ql.EuriborSwap', 'ql.FixedRateCoupon', 'ql.BondHelper']","To bootstrap a zero curve from market instruments in QuantLib, you can use the `Piecewise` class. Here's an example:
+
+```python
+helpers = []
+helpers.append(ql.DepositRateHelper(0.05, ql.Euribor6M()))
+helpers.append(ql.SwapRateHelper(0.06, ql.EuriborSwap(ql.Period('6M'), ql.Period('2Y'))))
+
+curve = ql.Piecewise(ql.Settings.instance().evaluationDate, helpers, ql.Actual360())
+```
+
+This will create a piecewise yield term structure from the provided interest rate instruments. The `Piecewise` class will interpolate the segments between the maturities of the instruments to create a continuous yield curve.
+
+Alternatively, you can use the `FittedBondDiscountCurve` class to fit a bond discount curve to the market instruments. Here's an example:
+
+```python
+pgbs = pd.DataFrame({'maturity': ['15-06-2020', '15-04-2021', '17-10-2022', '25-10-2023',
+                                  '15-02-2024', '15-10-2025', '21-07-2026', '14-04-2027',
+                                  '17-10-2028', '15-06-2029', '15-02-2030', '18-04-2034',
+                                  '15-04-2037', '15-02-2045'],
+                     'coupon': [4.8, 3.85, 2.2, 4.95, 5.65, 2.875, 2.875, 4.125,
+                                2.125, 1.95, 3.875, 2.25, 4.1, 4.1],
+                     'px': [102.532, 105.839, 107.247, 119.824, 124.005, 116.215, 117.708,
+                            128.027, 115.301, 114.261, 133.621, 119.879, 149.427, 159.177]})
+
+calendar = ql.TARGET()
+today = ql.Date(15, 6, 2020)
+bond_settlement_date = today
+
+helpers = []
+for index, row in pgbs.iterrows():
+    maturity = ql.Date.fromDateString(row['maturity'])
+    coupon = ql.FixedRateCoupon(ql.Period('6M'), row['coupon'], row['px'])
+    helpers.append(ql.BondHelper(maturity, coupon, bond_settlement_date, calendar))
+
+curve = ql.FittedBondDiscountCurve(bond_settlement_date, helpers, ql.Actual360(), 'CubicBSplinesFitting')
+```
+
+This will create a fitted bond discount curve using the provided bond instruments and the Cubic BSplines fitting method."

@@ -6,6 +6,8 @@ langchain_groq==1.1.0
 langchain_ollama==1.0.0
 langchain_qdrant==1.1.0
 langchain_text_splitters==1.0.0
+langgraph==1.0.4
+pandas==2.3.3
 qdrant_client==1.16.1
 streamlit==1.45.1
 trafilatura==2.0.0

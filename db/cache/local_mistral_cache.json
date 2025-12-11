@@ -1,0 +1,496 @@
+{
+  "quote_only||k=5||how do i set up the evaluation date in quantlib": {
+    "question_en": "How do I set up the evaluation date in QuantLib?",
+    "answer_en": "To set up the evaluation date in QuantLib, you can use the `ql.Settings.instance().evaluationDate` method. Here's an example of how to do it:\n\n```python\nimport QuantLib as ql\n\n# Let today date when we want to value a instrument be\ntoday = ql.Date(15,6,2020)\n\n# We can set evaluationDate in QL as\nql.Settings.instance().evaluationDate = today\n```\n\nThis will set the evaluation date to June 15th, 2020. You can replace the `today` variable with any desired date.",
+    "sources": [
+      {
+        "source": "basics.md",
+        "preview": "# Basics  \nBelow are the commands to set up the QuantLib with evaluation date. Everything starts with “evaluation date” which means the date you want to value a instrument (for more info see The global evaluation Date). Consider you want to value a “Swap” as of 09/16/2020, you will first set the eva"
+      },
+      {
+        "source": "indexes.md",
+        "preview": "### IborIndex  \n-\n*class*IborIndex(*familyName: str*,*tenor: ql.Period*,*settlementDays: int*,*currency: ql.Currency*,*fixingCalendar: ql.Calendar*,*convention: ql.Convention*,*endOfMonth: bool*,*dayCounter: ql.DayCounter*,*h: ql.YieldTermStructureHandle = ql.YieldTermStructureHandle()*) Base class "
+      },
+      {
+        "source": "indexes.md",
+        "preview": "## Interest Rate  \nIn the following block there are going to be listed all the classes that are subclasses of the `InterestRateIndex`  \nclass.\n`InterestRateIndex`  \nclass itself if a child class of the `Index`  \nclass and serves as the abstract base for all interest rate indexes in QuantLib, includi"
+      },
+      {
+        "source": "indexes.md",
+        "preview": "## IndexManager  \nTo avoid discrepancies between the indexes themselves QuantLib employes a unique global repository for the various registered indexes under the `IndexManager`  \nclass.\n`IndexManager`  \nbasically stores for each index added a timeseries of the past fixings.  \nThe public methods that"
+      },
+      {
+        "source": "dates.md",
+        "preview": "## Calendar  \nThe class ql.Calendar provides the interface for determining whether a date is a business day or a holiday for a given exchange or a given country, and for incrementing/decrementing a date of a given number of business days.  \n**Available Calendars**  \nArgentina, Australia, Austria, Be"
+      }
+    ]
+  },
+  "quote_only||k=5||which core quantlib types are typically used when starting a simple pricing example": {
+    "question_en": "Which core QuantLib types are typically used when starting a simple pricing example?",
+    "answer_en": "When starting a simple pricing example in QuantLib-Python, typically the following core types are used:\n\n1. Settings: To set up the evaluation date using `ql.Settings.instance().evaluationDate = today` where `today` is a `ql.Date`.\n\n2. InterestRateIndex: As the base class for all interest rate indexes in QuantLib, including IBOR and overnight indexes. It provides common interface for all interest rate indexes such as Ibor and Overnight indexes.\n\n3. IborIndex: Base class for Interbank Offered Rate (IBOR) indexes. It is used to create specific IBOR indexes like Euribor or Libor.\n\n4. InterestRate: A concrete interest rate class that represents the value of the rate of return, day calculation rule, interest rate method, and frequency of interest payments.",
+    "sources": [
+      {
+        "source": "basics.md",
+        "preview": "# Basics  \nBelow are the commands to set up the QuantLib with evaluation date. Everything starts with “evaluation date” which means the date you want to value a instrument (for more info see The global evaluation Date). Consider you want to value a “Swap” as of 09/16/2020, you will first set the eva"
+      },
+      {
+        "source": "indexes.md",
+        "preview": "# Indexes  \nQuantLib provides a set of classes that represent various types of Indexes.  \nThe available classes under the **Interest Rate Indexes** are:  \n`IborIndex`  \n`OvernightIndex`  \n`SpreadIndex`  \n`SwapSpreadIndex`  \nThe available classes under the **Inflation Indexes** are:  \n`InflationIndex"
+      },
+      {
+        "source": "indexes.md",
+        "preview": "## Interest Rate  \nIn the following block there are going to be listed all the classes that are subclasses of the `InterestRateIndex`  \nclass.\n`InterestRateIndex`  \nclass itself if a child class of the `Index`  \nclass and serves as the abstract base for all interest rate indexes in QuantLib, includi"
+      },
+      {
+        "source": "indexes.md",
+        "preview": "### IborIndex  \n-\n*class*IborIndex(*familyName: str*,*tenor: ql.Period*,*settlementDays: int*,*currency: ql.Currency*,*fixingCalendar: ql.Calendar*,*convention: ql.Convention*,*endOfMonth: bool*,*dayCounter: ql.DayCounter*,*h: ql.YieldTermStructureHandle = ql.YieldTermStructureHandle()*) Base class "
+      },
+      {
+        "source": "cashflows.md",
+        "preview": "# CashFlows, Legs and Interest Rates  \n## Interest Rates  \nConcrete interest rate class  \n-\nql.InterestRate(\n*rate*,*dayCount*,*compounding*,*frequency*)  \n```\nrate = ql.InterestRate(0.05, ql.Actual360(), ql.Compounded, ql.Annual)\n```  \nHere are some common member functions:  \n**rate()**: a floating"
+      }
+    ]
+  },
+  "quote_only||k=5||how do i create a quantlib date and convert it from a python datetime": {
+    "question_en": "How do I create a QuantLib Date and convert it from a Python datetime?",
+    "answer_en": "To create a QuantLib Date and convert it from a Python datetime, you can use the following methods:\n\n1. Convert Python datetime to QuantLib Date using the `ql.Date` constructor with the format string:\n\n```python\nfrom datetime import datetime\ndate_str = '09/16/2020'  # your Python datetime string\ndate_obj = ql.Date(date_str, '%m/%d/%Y')  # create QuantLib Date object\n```\n\n2. Set the evaluation date in QuantLib using the created `date_obj`:\n\n```python\ntoday = date_obj\nql.Settings.instance().evaluationDate = today\nprint(ql.Settings.instance().evaluationDate)  # prints the set evaluation date\n```",
+    "sources": [
+      {
+        "source": "basics.md",
+        "preview": "# Basics  \nBelow are the commands to set up the QuantLib with evaluation date. Everything starts with “evaluation date” which means the date you want to value a instrument (for more info see The global evaluation Date). Consider you want to value a “Swap” as of 09/16/2020, you will first set the eva"
+      },
+      {
+        "source": "dates.md",
+        "preview": "## Date  \n**Constructors**  \n-\nql.Date(\n*serialNumber*)  \nserialNumber is an integer, such as 24214, and 1 corresponds to 1899-12-31. The usage is the same as in Excel. (The range of serialNumber is limited to 367 to 109574, and the corresponding date range is 1901-01-01 to 2199-12-31.)  \n```\nql.Dat"
+      },
+      {
+        "source": "dates.md",
+        "preview": "## DayCounter  \nhttps://www.isda.org/a/pIJEE/The-Actual-Actual-Day-Count-Fraction-1999.pdf  \nThe “Day Count Convention” is critical for the valuation of financial products, especially for fixed-income products. QuantLib provides the following common rules:  \n**Actual360**: Actual / 360**Actual365Fix"
+      },
+      {
+        "source": "dates.md",
+        "preview": "## Calendar  \nThe class ql.Calendar provides the interface for determining whether a date is a business day or a holiday for a given exchange or a given country, and for incrementing/decrementing a date of a given number of business days.  \n**Available Calendars**  \nArgentina, Australia, Austria, Be"
+      },
+      {
+        "source": "basics.md",
+        "preview": "## Observable  \n```\nimport QuantLib as ql\nflag = None\ndef raiseFlag():\nglobal flag\nflag = 1\nme = ql.SimpleQuote(0.0)\nobs = ql.Observer(raiseFlag)\nobs.registerWith(me)\nme.setValue(3.14)\nif not flag:\nprint(\"Case 1: Observer was not notified of market element change\")\nflag = None\nobs.unregisterWith(me)"
+      }
+    ]
+  },
+  "quote_only||k=5||how can i advance a date by a given number of months using quantlib": {
+    "question_en": "How can I advance a date by a given number of months using QuantLib?",
+    "answer_en": "To advance a date by a given number of months using QuantLib, you can use the `DateGeneration` functionality to generate a schedule of dates for a specific period. Here's an example of how to create a schedule with monthly periods starting from a certain date and advancing by a specified number of months:\n\n```python\nimport QuantLib as ql\n\n# Set evaluation date\ntoday = ql.Date(15,6,2020)\nql.Settings.instance().evaluationDate = today\n\n# Define start and end dates\nstart_date = ql.Date(7,5,2020)\nnum_months = 3\nend_date = start_date + ql.Period(ql.Months(num_months))\n\n# Generate a schedule of monthly dates\nrules = {\n    'Backward': ql.DateGeneration.Backward,\n    'Forward': ql.DateGeneration.Forward,\n    'Zero': ql.DateGeneration.Zero,\n    'ThirdWednesDay': ql.DateGeneration.ThirdWednesday,\n    'Twentieth': ql.DateGeneration.Twentieth,\n    'TwentiethIMM': ql.DateGeneration.TwentiethIMM,\n    'CDS': ql.DateGeneration.CDS\n}\nschedule = ql.MakeSchedule(start_date, end_date, rules['Backward'])\n```\n\nIn this example, we generate a schedule of monthly dates starting from May 7th, 2020 and advancing by 3 months using the 'Backward' rule. You can adjust the start date, number of months, and date generation rule to suit your needs.",
+    "sources": [
+      {
+        "source": "basics.md",
+        "preview": "# Basics  \nBelow are the commands to set up the QuantLib with evaluation date. Everything starts with “evaluation date” which means the date you want to value a instrument (for more info see The global evaluation Date). Consider you want to value a “Swap” as of 09/16/2020, you will first set the eva"
+      },
+      {
+        "source": "indexes.md",
+        "preview": "## IndexManager  \nTo avoid discrepancies between the indexes themselves QuantLib employes a unique global repository for the various registered indexes under the `IndexManager`  \nclass.\n`IndexManager`  \nbasically stores for each index added a timeseries of the past fixings.  \nThe public methods that"
+      },
+      {
+        "source": "dates.md",
+        "preview": "### DateGeneration  \nThe valuation of many products relies on an analysis of future cash flows, so accurately generating a list of dates for future cash flows is crucial. After the start and end dates are given, the date list can be generated in the manner of “reverse method” or “forward method”.  \n"
+      },
+      {
+        "source": "dates.md",
+        "preview": "## Date  \n**Constructors**  \n-\nql.Date(\n*serialNumber*)  \nserialNumber is an integer, such as 24214, and 1 corresponds to 1899-12-31. The usage is the same as in Excel. (The range of serialNumber is limited to 367 to 109574, and the corresponding date range is 1901-01-01 to 2199-12-31.)  \n```\nql.Dat"
+      },
+      {
+        "source": "dates.md",
+        "preview": "## Calendar  \nThe class ql.Calendar provides the interface for determining whether a date is a business day or a holiday for a given exchange or a given country, and for incrementing/decrementing a date of a given number of business days.  \n**Available Calendars**  \nArgentina, Australia, Austria, Be"
+      }
+    ]
+  },
+  "quote_only||k=5||how do i build a leg of fixed cashflows in quantlib": {
+    "question_en": "How do I build a leg of fixed cashflows in QuantLib?",
+    "answer_en": "To build a leg of fixed cashflows in QuantLib, you can use the `FixedRateLeg` helper class as shown in the provided context:\n\n```python\nimport QuantLib as ql\n\n# Set evaluation date\ntoday = ql.Date(15,6,2020)\nql.Settings.instance().evaluationDate = today\n\n# Schedule, day count, nominals, fixed rate, business day convention, first period day counter, ex-coupon period, payment calendar\nschedule = ql.MakeSchedule(ql.Date(15,6,2020), ql.Date(15,6,2021), ql.Period('6M'))\ndayCount = ql.Actual360()\nleg = ql.FixedRateLeg(schedule, dayCount, [100.], [0.05])\n```\n\nIn this example, a fixed rate leg is created with one period (6 months) from June 15th, 2020 to June 15th, 2021, having a fixed rate of 5%, and a notional amount of 100.",
+    "sources": [
+      {
+        "source": "cashflows.md",
+        "preview": "### FixedRateLeg  \nhelper class building a sequence of fixed rate coupons  \n-\nql.FixedRateLeg(\n*schedule*,*dayCount*,*nominals*,*fixedRate*,*BusinessDayConvention*,*FirstPeriodDayCounter*,*ExCouponPeriod*,*PaymentCalendar*)  \n```\nschedule = ql.MakeSchedule(ql.Date(15,6,2020), ql.Date(15,6,2021), ql."
+      },
+      {
+        "source": "basics.md",
+        "preview": "# Basics  \nBelow are the commands to set up the QuantLib with evaluation date. Everything starts with “evaluation date” which means the date you want to value a instrument (for more info see The global evaluation Date). Consider you want to value a “Swap” as of 09/16/2020, you will first set the eva"
+      },
+      {
+        "source": "cashflows.md",
+        "preview": "## Legs  \n### Leg  \n```\ndate = ql.Date().todaysDate()\ncf1 = ql.SimpleCashFlow(5.0, date+365)\ncf2 = ql.SimpleCashFlow(5.0, date+365*2)\ncf3 = ql.SimpleCashFlow(105.0, date+365*3)\nleg = ql.Leg([cf1, cf2, cf3])\n```"
+      },
+      {
+        "source": "termstructures.md",
+        "preview": "# Term Structures  \nQuantLib provides a module for the representation of different term structures used in Quantitative Finance. A term structure describe the evolution of any variable defined across maturities. Mathematically a term structure describe the stochastic evolution of a variable , indexe"
+      },
+      {
+        "source": "cashflows.md",
+        "preview": "### Cashflow Inspectors  \nthe last cashflow paying before or at the given date  \n-\nql.CashFlows.previousCashFlowDate(\n*leg*,*includeSettlementDateFlows*,*settlementDate=ql.Date()*)  \n```\nql.CashFlows.previousCashFlowDate(leg, True)\nql.CashFlows.previousCashFlowDate(leg, True, ql.Date(15,12,2020))\n``"
+      }
+    ]
+  },
+  "quote_only||k=5||how can i get the payment dates and amounts from a cashflow leg in quantlib": {
+    "question_en": "How can I get the payment dates and amounts from a cashflow leg in QuantLib?",
+    "answer_en": "To get the payment dates and amounts from a cashflow leg in QuantLib, you can use the `ql.CashFlows.startDate()`, `ql.CashFlows.maturityDate()`, `ql.CashFlows.nextCashFlowDate()` and `ql.CashFlows.previousCashFlowDate()` functions.\n\nFirst, let's create a leg with some cashflows:\n\n```python\nimport QuantLib as ql\n\ndate = ql.Date().todaysDate()\ncf1 = ql.SimpleCashFlow(5.0, date+365)\ncf2 = ql.SimpleCashFlow(5.0, date+365*2)\ncf3 = ql.SimpleCashFlow(105.0, date+365*3)\nleg = ql.Leg([cf1, cf2, cf3])\n```\n\nNow, let's get the start and maturity dates of the leg:\n\n```python\nstart_date = ql.CashFlows.startDate(leg)\nmaturity_date = ql.CashFlows.maturityDate(leg)\nprint(\"Start Date:\", start_date)\nprint(\"Maturity Date:\", maturity_date)\n```\n\nTo get the next and previous payment dates, you can use the following functions:\n\n```python\nnext_payment_date = ql.CashFlows.nextCashFlowDate(leg, True)\nprevious_payment_date = ql.CashFlows.previousCashFlowDate(leg, True)\nprint(\"Next Payment Date:\", next_payment_date)\nprint(\"Previous Payment Date:\", previous_payment_date)\n```\n\nTo get the amount of a specific cashflow, you can access it directly from the leg:\n\n```python\ncf = leg[1]  # Accessing the second cashflow in the leg\namount = cf.amount()\nprint(\"Amount:\", amount)\n```",
+    "sources": [
+      {
+        "source": "cashflows.md",
+        "preview": "### Cashflow Inspectors  \nthe last cashflow paying before or at the given date  \n-\nql.CashFlows.previousCashFlowDate(\n*leg*,*includeSettlementDateFlows*,*settlementDate=ql.Date()*)  \n```\nql.CashFlows.previousCashFlowDate(leg, True)\nql.CashFlows.previousCashFlowDate(leg, True, ql.Date(15,12,2020))\n``"
+      },
+      {
+        "source": "cashflows.md",
+        "preview": "## Cashflow Analysis Functions  \n### Date Inspectors  \n-\nql.CashFlows.startDate(\n*leg*)  \n-\nql.CashFlows.maturityDate(\n*leg*)"
+      },
+      {
+        "source": "cashflows.md",
+        "preview": "## CashFlows  \n### SimpleCashFlow  \n-\nql.SimpleCashFlow(\n*amount*,*date*)  \n```\namount = 105\ndate = ql.Date(15,6,2020)\ncf = ql.SimpleCashFlow(amount, date)\n```"
+      },
+      {
+        "source": "cashflows.md",
+        "preview": "## Legs  \n### Leg  \n```\ndate = ql.Date().todaysDate()\ncf1 = ql.SimpleCashFlow(5.0, date+365)\ncf2 = ql.SimpleCashFlow(5.0, date+365*2)\ncf3 = ql.SimpleCashFlow(105.0, date+365*3)\nleg = ql.Leg([cf1, cf2, cf3])\n```"
+      },
+      {
+        "source": "basics.md",
+        "preview": "# Basics  \nBelow are the commands to set up the QuantLib with evaluation date. Everything starts with “evaluation date” which means the date you want to value a instrument (for more info see The global evaluation Date). Consider you want to value a “Swap” as of 09/16/2020, you will first set the eva"
+      }
+    ]
+  },
+  "quote_only||k=5||how do i construct an iborindex in quantlib": {
+    "question_en": "How do I construct an IborIndex in QuantLib?",
+    "answer_en": "To construct an IborIndex in QuantLib, you can use the provided `IborIndex` class. Here's a basic example of how to create an IborIndex:\n\n```python\nimport QuantLib as ql\n\n# Set the evaluation date\ntoday = ql.Date(15,6,2020)\nql.Settings.instance().evaluationDate = today\n\n# Create an IborIndex instance\nibor_index = ql.IborIndex(\"Euribor\", ql.Period(90, ql.Months), 0, ql.Currency.EUR, ql.UnitedStates::ISDA, ql.Unadjusted, ql.ActualActual(), None)\n```\n\nIn this example, we are creating an Euribor index with a tenor of 3 months (90 days), no settlement days, Euro currency, using the ISDA calendar for fixing dates, and Actual/Actual day count convention.",
+    "sources": [
+      {
+        "source": "indexes.md",
+        "preview": "### IborIndex  \n-\n*class*IborIndex(*familyName: str*,*tenor: ql.Period*,*settlementDays: int*,*currency: ql.Currency*,*fixingCalendar: ql.Calendar*,*convention: ql.Convention*,*endOfMonth: bool*,*dayCounter: ql.DayCounter*,*h: ql.YieldTermStructureHandle = ql.YieldTermStructureHandle()*) Base class "
+      },
+      {
+        "source": "indexes.md",
+        "preview": "# Indexes  \nQuantLib provides a set of classes that represent various types of Indexes.  \nThe available classes under the **Interest Rate Indexes** are:  \n`IborIndex`  \n`OvernightIndex`  \n`SpreadIndex`  \n`SwapSpreadIndex`  \nThe available classes under the **Inflation Indexes** are:  \n`InflationIndex"
+      },
+      {
+        "source": "indexes.md",
+        "preview": "## Interest Rate  \nIn the following block there are going to be listed all the classes that are subclasses of the `InterestRateIndex`  \nclass.\n`InterestRateIndex`  \nclass itself if a child class of the `Index`  \nclass and serves as the abstract base for all interest rate indexes in QuantLib, includi"
+      },
+      {
+        "source": "indexes.md",
+        "preview": "## IndexManager  \nTo avoid discrepancies between the indexes themselves QuantLib employes a unique global repository for the various registered indexes under the `IndexManager`  \nclass.\n`IndexManager`  \nbasically stores for each index added a timeseries of the past fixings.  \nThe public methods that"
+      },
+      {
+        "source": "basics.md",
+        "preview": "# Basics  \nBelow are the commands to set up the QuantLib with evaluation date. Everything starts with “evaluation date” which means the date you want to value a instrument (for more info see The global evaluation Date). Consider you want to value a “Swap” as of 09/16/2020, you will first set the eva"
+      }
+    ]
+  },
+  "quote_only||k=5||how can i link an index to a yield term structure in quantlib": {
+    "question_en": "How can I link an index to a yield term structure in QuantLib?",
+    "answer_en": "To link an index to a yield term structure in QuantLib, you can use the `YieldTermStructureHandle` class. This class allows you to store a handle to a yield term structure and associate it with a quote handle for a spread. Here's an example:\n\n```python\n# Import necessary classes\nimport QuantLib as ql\n\n# Create a FlatForward yield curve\nref_date = ql.Date(10, 1, 2020)\nrate = 0.04875825\ndiscount_curve = ql.YieldTermStructureHandle(ql.FlatForward(ref_date, rate, ql.Actual365Fixed()))\n\n# Create an index with a family name (replace 'MyIndex' with the actual index name)\nindex = ql.InterestRateIndex('MyIndex')\n\n# Create a handle for the index and the spread\nspread_handle = ql.QuoteHandle(ql.SimpleQuote(0.005))\nzero_spreaded_curve = ql.ZeroSpreadedTermStructure(discount_curve, spread_handle)\n```\n\nIn this example, `MyIndex` is a placeholder for the actual index you want to use. The `ZeroSpreadedTermStructure` class is used to create a term structure with an added spread on the zero yield rate, which is linked to the `MyIndex`.",
+    "sources": [
+      {
+        "source": "indexes.md",
+        "preview": "## IndexManager  \nTo avoid discrepancies between the indexes themselves QuantLib employes a unique global repository for the various registered indexes under the `IndexManager`  \nclass.\n`IndexManager`  \nbasically stores for each index added a timeseries of the past fixings.  \nThe public methods that"
+      },
+      {
+        "source": "termstructures.md",
+        "preview": "## Yield Term Structures  \n-\n*class*YieldTermStructure Abstract base class for interest-rate term structures.  \nThis class defines the interface for all concrete interest rate term structures in QuantLib. It is not meant to be instantiated directly, but provides the common API for all yield curve ob"
+      },
+      {
+        "source": "termstructures.md",
+        "preview": "# Term Structures  \nQuantLib provides a module for the representation of different term structures used in Quantitative Finance. A term structure describe the evolution of any variable defined across maturities. Mathematically a term structure describe the stochastic evolution of a variable , indexe"
+      },
+      {
+        "source": "indexes.md",
+        "preview": "## Interest Rate  \nIn the following block there are going to be listed all the classes that are subclasses of the `InterestRateIndex`  \nclass.\n`InterestRateIndex`  \nclass itself if a child class of the `Index`  \nclass and serves as the abstract base for all interest rate indexes in QuantLib, includi"
+      },
+      {
+        "source": "termstructures.md",
+        "preview": "### ZeroSpreadedTermStructure  \nTerm structure with an added spread on the zero yield rate  \n-\nql.ZeroSpreadedTermStructure(\n*YieldTermStructure*,*spread*)  \n```\ncrv = ql.FlatForward(ql.Date(10,1,2020),0.04875825,ql.Actual365Fixed())\nyts = ql.YieldTermStructureHandle(crv)\nspread = ql.QuoteHandle(ql."
+      }
+    ]
+  },
+  "quote_only||k=5||how do i create a simple fixed-rate bond instrument in quantlib": {
+    "question_en": "How do I create a simple fixed-rate bond instrument in QuantLib?",
+    "answer_en": "To create a simple fixed-rate bond instrument in QuantLib, you can use the `FixedRateCoupon` class and the `Bond` class. Here's an example of how to create a fixed-rate bond:\n\n```python\nimport QuantLib as ql\n\n# Set evaluation date\ntoday = ql.Date(15,6,2020)\nql.Settings.instance().evaluationDate = today\n\n# Define the bond parameters\nsettlement_days = 0\nday_counter = ql.ActualActual()\ncalendar = ql.UnitedStates()\ndiscount_curve = ... # YieldTermStructureHandle for discounting, not provided in context\n\n# Define the IborIndex (e.g., 3-month Libor)\nibor_index = ql.IborIndex(\"Libor\", ql.Period(90, ql.Days), settlement_days, ql.USD(), calendar, ql.Actual360(), False, day_counter)\n\n# Define the fixed-rate coupon\ncoupon = ql.FixedRateCoupon(0.05 / 100, ql.Semiannual)\n\n# Define the schedule for the bond's cash flows\nschedule = ql.Schedule(today, today + ql.Period(5 * 365, ql.Days), ql.Period(6 * 365 / 2, ql.Semiannual), calendar, day_counter)\n\n# Create the bond with the defined parameters\nbond = ql.Bond(coupon, schedule, 1000, schedule[-1].endDate(), discount_curve)\n```\n\nIn this example, we create a fixed-rate bond with a face value of $1000, a coupon rate of 5%, semi-annual payments, and a maturity of 5 years. The bond uses the 3-month Libor index for discounting its cash flows.",
+    "sources": [
+      {
+        "source": "basics.md",
+        "preview": "# Basics  \nBelow are the commands to set up the QuantLib with evaluation date. Everything starts with “evaluation date” which means the date you want to value a instrument (for more info see The global evaluation Date). Consider you want to value a “Swap” as of 09/16/2020, you will first set the eva"
+      },
+      {
+        "source": "indexes.md",
+        "preview": "## Interest Rate  \nIn the following block there are going to be listed all the classes that are subclasses of the `InterestRateIndex`  \nclass.\n`InterestRateIndex`  \nclass itself if a child class of the `Index`  \nclass and serves as the abstract base for all interest rate indexes in QuantLib, includi"
+      },
+      {
+        "source": "indexes.md",
+        "preview": "### IborIndex  \n-\n*class*IborIndex(*familyName: str*,*tenor: ql.Period*,*settlementDays: int*,*currency: ql.Currency*,*fixingCalendar: ql.Calendar*,*convention: ql.Convention*,*endOfMonth: bool*,*dayCounter: ql.DayCounter*,*h: ql.YieldTermStructureHandle = ql.YieldTermStructureHandle()*) Base class "
+      },
+      {
+        "source": "basics.md",
+        "preview": "## Observable  \n```\nimport QuantLib as ql\nflag = None\ndef raiseFlag():\nglobal flag\nflag = 1\nme = ql.SimpleQuote(0.0)\nobs = ql.Observer(raiseFlag)\nobs.registerWith(me)\nme.setValue(3.14)\nif not flag:\nprint(\"Case 1: Observer was not notified of market element change\")\nflag = None\nobs.unregisterWith(me)"
+      },
+      {
+        "source": "cashflows.md",
+        "preview": "# CashFlows, Legs and Interest Rates  \n## Interest Rates  \nConcrete interest rate class  \n-\nql.InterestRate(\n*rate*,*dayCount*,*compounding*,*frequency*)  \n```\nrate = ql.InterestRate(0.05, ql.Actual360(), ql.Compounded, ql.Annual)\n```  \nHere are some common member functions:  \n**rate()**: a floating"
+      }
+    ]
+  },
+  "quote_only||k=5||how can i retrieve the npv of an instrument after assigning a pricing engine in quantlib": {
+    "question_en": "How can I retrieve the NPV of an instrument after assigning a pricing engine in QuantLib?",
+    "answer_en": "To retrieve the NPV (Net Present Value) of an instrument after assigning a pricing engine in QuantLib, you can use the `computeNPV` method provided by the `QuantExt` module. Here's how to set up the environment and calculate the NPV for a Forward European option:\n\n```python\nimport QuantLib as ql\n\ntoday = ql.Date().todaysDate()\nriskFreeTS = ql.YieldTermStructureHandle(ql.FlatForward(today, 0.05, ql.Actual365Fixed()))\ndividendTS = ql.YieldTermStructureHandle(ql.FlatForward(today, 0.01, ql.Actual365Fixed()))\nvolatility = ql.BlackVolTermStructureHandle(ql.BlackConstantVol(today, ql.NullCalendar(), 0.1, ql.Actual365Fixed()))\ninitialValue = ql.QuoteHandle(ql.SimpleQuote(100))\nprocess = ql.BlackScholesMertonProcess(initialValue, dividendTS, riskFreeTS, volatility)\nengine = ql.ForwardEuropeanEngine(process)\n\n# Assuming you have a Forward European option instrument\nforwardOption = ...\nforwardOption.setPricingEngine(engine)\n\nnpv = forwardOption.NPV()\nprint(\"NPV:\", npv)\n```",
+    "sources": [
+      {
+        "source": "pricing_engines.md",
+        "preview": "## Cap Pricing Engines  \n### BlackCapFloorEngine  \n-\nql.BlackCapFloorEngine(\n*yieldTermStructure*,*quoteHandle*)  \n```\nvols = ql.QuoteHandle(ql.SimpleQuote(0.547295))\nengine = ql.BlackCapFloorEngine(yts, vols)\ncap.setPricingEngine(engine)\n```  \n-\nql.BlackCapFloorEngine(\n*yieldTermStructure*,*Optionl"
+      },
+      {
+        "source": "basics.md",
+        "preview": "# Basics  \nBelow are the commands to set up the QuantLib with evaluation date. Everything starts with “evaluation date” which means the date you want to value a instrument (for more info see The global evaluation Date). Consider you want to value a “Swap” as of 09/16/2020, you will first set the eva"
+      },
+      {
+        "source": "pricing_engines.md",
+        "preview": "# Pricing Engines  \n## Black & Bachelier Engines  \nThe price engine module provides with a set of functions from the two cornerstones models in mathematical finance: the **Black** and **Bachelier** option pricing formulas, also exposing their implied volatility inverses, and related probabilities su"
+      },
+      {
+        "source": "basics.md",
+        "preview": "## Observable  \n```\nimport QuantLib as ql\nflag = None\ndef raiseFlag():\nglobal flag\nflag = 1\nme = ql.SimpleQuote(0.0)\nobs = ql.Observer(raiseFlag)\nobs.registerWith(me)\nme.setValue(3.14)\nif not flag:\nprint(\"Case 1: Observer was not notified of market element change\")\nflag = None\nobs.unregisterWith(me)"
+      },
+      {
+        "source": "pricing_engines.md",
+        "preview": "### Forward Options  \n#### ForwardEuropeanEngine  \nThis engine in python implements the C++ engine QuantLib::ForwardVanillaEngine (notice the subtle name change)  \n-\nql.ForwardEuropeanEngine(\n*process*)  \n```\ntoday = ql.Date().todaysDate()\nriskFreeTS = ql.YieldTermStructureHandle(ql.FlatForward(toda"
+      }
+    ]
+  },
+  "quote_only||k=5||how do i set a discounting bond pricing engine in quantlib": {
+    "question_en": "How do I set a discounting bond pricing engine in QuantLib?",
+    "answer_en": "To set a discounting bond pricing engine in QuantLib, you can use the `DiscountingBondEngine` class. Here's an example:\n\n```python\nimport QuantLib as ql\n\n# Let the today date when we want to value a instrument be\ntoday = ql.Date(15,6,2020)\n\n# Set evaluation date in QuantLib\nql.Settings.instance().evaluationDate = today\n\n# Create a yield term structure (discount curve)\ncrv = ql.FlatForward(ql.Date().todaysDate(),0.04875825,ql.Actual365Fixed())\nyts = ql.YieldTermStructureHandle(crv)\n\n# Create a discounting bond pricing engine using the yield term structure\nengine = ql.DiscountingBondEngine(yts)\n```\n\nIn this example, we first set the evaluation date to the desired date (June 15th, 2020). Then, we create a flat discount curve and a `YieldTermStructureHandle` object using that curve. Finally, we create a `DiscountingBondEngine` instance with the yield term structure handle. This engine can be used to price discounting bonds.",
+    "sources": [
+      {
+        "source": "pricing_engines.md",
+        "preview": "## Bond Pricing Engines  \n### DiscountingBondEngine  \n-\nql.DiscountingBondEngine(\n*discountCurve*)  \n```\ncrv = ql.FlatForward(ql.Date().todaysDate(),0.04875825,ql.Actual365Fixed())\nyts = ql.YieldTermStructureHandle(crv)\nengine = ql.DiscountingBondEngine(yts)\n```"
+      },
+      {
+        "source": "basics.md",
+        "preview": "# Basics  \nBelow are the commands to set up the QuantLib with evaluation date. Everything starts with “evaluation date” which means the date you want to value a instrument (for more info see The global evaluation Date). Consider you want to value a “Swap” as of 09/16/2020, you will first set the eva"
+      },
+      {
+        "source": "pricing_engines.md",
+        "preview": "## Cap Pricing Engines  \n### BlackCapFloorEngine  \n-\nql.BlackCapFloorEngine(\n*yieldTermStructure*,*quoteHandle*)  \n```\nvols = ql.QuoteHandle(ql.SimpleQuote(0.547295))\nengine = ql.BlackCapFloorEngine(yts, vols)\ncap.setPricingEngine(engine)\n```  \n-\nql.BlackCapFloorEngine(\n*yieldTermStructure*,*Optionl"
+      },
+      {
+        "source": "pricing_engines.md",
+        "preview": "## Swap Pricing Engines  \n### DiscountingSwapEngine  \n-\nql.DiscountingSwapEngine(\n*YieldTermStructure*)  \n```\nyts = ql.YieldTermStructureHandle(ql.FlatForward(2, ql.TARGET(), 0.5, ql.Actual360()))\nengine = ql.DiscountingSwapEngine(yts)\n```"
+      },
+      {
+        "source": "pricing_engines.md",
+        "preview": "### Forward Options  \n#### ForwardEuropeanEngine  \nThis engine in python implements the C++ engine QuantLib::ForwardVanillaEngine (notice the subtle name change)  \n-\nql.ForwardEuropeanEngine(\n*process*)  \n```\ntoday = ql.Date().todaysDate()\nriskFreeTS = ql.YieldTermStructureHandle(ql.FlatForward(toda"
+      }
+    ]
+  },
+  "quote_only||k=5||which pricing engines are commonly used for bond and swap pricing in quantlib": {
+    "question_en": "Which pricing engines are commonly used for bond and swap pricing in QuantLib?",
+    "answer_en": "The commonly used pricing engines for bond and swap pricing in QuantLib are:\n\n1. DiscountingSwapEngine: This engine is used for discounting swaps. It requires a YieldTermStructure as an argument.\n\n```python\nyts = ql.YieldTermStructureHandle(ql.FlatForward(2, ql.TARGET(), 0.5, ql.Actual360()))\nengine = ql.DiscountingSwapEngine(yts)\n```\n\n2. BachelierSwaptionEngine: This engine is used for pricing swaptions. It can take a YieldTermStructure, Quote, or SwaptionVolatilityStructure as arguments.\n\n```python\nbachelierEngine = ql.BachelierSwaptionEngine(yts, ql.QuoteHandle(ql.SimpleQuote(0.0055)))\nswaption.setPricingEngine(bachelierEngine)\nswaption.NPV()\n```\n\nFor pricing forward options, QuantLib provides the ForwardEuropeanEngine and MCForwardEuropeanBSEngine.\n\n1. ForwardEuropeanEngine: This engine implements the C++ engine QuantLib::ForwardVanillaEngine. It requires a process as an argument.\n\n```python\ntoday = ql.Date().todaysDate()\nriskFreeTS = ql.YieldTermStructureHandle(ql.FlatForward(today, 0.05, ql.Actual365Fixed()))\ndividendTS = ql.YieldTermStructureHandle(ql.FlatForward(today, 0.01, ql.Actual365Fixed()))\nvolatility = ql.BlackVolTermStructureHandle(ql.BlackConstantVol(today, ql.NullCalendar(), 0.1, ql.Actual365Fixed()))\ninitialValue = ql.QuoteHandle(ql.SimpleQuote(100))\nprocess = ql.BlackScholesMertonProcess(initialValue, dividendTS, riskFreeTS, volatility)\nengine = ql.ForwardEuropeanEngine(process)\n```\n\n2. MCForwardEuropeanBSEngine: This engine is used for Monte Carlo simulation of forward European options. It requires a process as an argument.",
+    "sources": [
+      {
+        "source": "basics.md",
+        "preview": "# Basics  \nBelow are the commands to set up the QuantLib with evaluation date. Everything starts with “evaluation date” which means the date you want to value a instrument (for more info see The global evaluation Date). Consider you want to value a “Swap” as of 09/16/2020, you will first set the eva"
+      },
+      {
+        "source": "pricing_engines.md",
+        "preview": "## Swap Pricing Engines  \n### DiscountingSwapEngine  \n-\nql.DiscountingSwapEngine(\n*YieldTermStructure*)  \n```\nyts = ql.YieldTermStructureHandle(ql.FlatForward(2, ql.TARGET(), 0.5, ql.Actual360()))\nengine = ql.DiscountingSwapEngine(yts)\n```"
+      },
+      {
+        "source": "pricing_engines.md",
+        "preview": "### BachelierSwaptionEngine  \n-\nql.BachelierSwaptionEngine(\n*yts*,*quote*)  \n-\nql.BachelierSwaptionEngine(\n*yts*,*swaptionVolatilityStructure*)  \n-\nql.BachelierSwaptionEngine(\n*yts*,*quote*,*dayCounter*)  \n```\nbachelierEngine = ql.BachelierSwaptionEngine(yts, ql.QuoteHandle(ql.SimpleQuote(0.0055)))\n"
+      },
+      {
+        "source": "pricing_engines.md",
+        "preview": "# Pricing Engines  \n## Black & Bachelier Engines  \nThe price engine module provides with a set of functions from the two cornerstones models in mathematical finance: the **Black** and **Bachelier** option pricing formulas, also exposing their implied volatility inverses, and related probabilities su"
+      },
+      {
+        "source": "pricing_engines.md",
+        "preview": "### Forward Options  \n#### ForwardEuropeanEngine  \nThis engine in python implements the C++ engine QuantLib::ForwardVanillaEngine (notice the subtle name change)  \n-\nql.ForwardEuropeanEngine(\n*process*)  \n```\ntoday = ql.Date().todaysDate()\nriskFreeTS = ql.YieldTermStructureHandle(ql.FlatForward(toda"
+      }
+    ]
+  },
+  "quote_only||k=5||how do i build a flat yield term structure in quantlib": {
+    "question_en": "How do I build a flat yield term structure in QuantLib?",
+    "answer_en": "To build a flat yield term structure in QuantLib-Python, you can use the `FlatForward` class which is a child of `YieldTermStructure`. Here's an example:\n\n```python\nimport QuantLib as ql\n\n# Set the evaluation date\ntoday = ql.Date(15,6,2020)\nql.Settings.instance().evaluationDate = today\n\n# Create a flat yield curve with a fixed rate and day-count convention\nrate = 0.04875825\nday_count_convention = ql.Actual365Fixed()\ndiscount_curve_date = ql.Date(10,1,2020)\ndiscount_curve = ql.FlatForward(discount_curve_date, rate, day_count_convention)\n\n# Create a handle for the discount curve\nyield_term_structure_handle = ql.YieldTermStructureHandle(discount_curve)\n```\n\nIn this example, we create a flat yield curve with a fixed rate of 0.04875825 and a day-count convention of `Actual365Fixed()`. The discount curve is evaluated as of the date `10/1/2020`. You can adjust these parameters according to your needs.",
+    "sources": [
+      {
+        "source": "termstructures.md",
+        "preview": "## Yield Term Structures  \n-\n*class*YieldTermStructure Abstract base class for interest-rate term structures.  \nThis class defines the interface for all concrete interest rate term structures in QuantLib. It is not meant to be instantiated directly, but provides the common API for all yield curve ob"
+      },
+      {
+        "source": "termstructures.md",
+        "preview": "### ZeroSpreadedTermStructure  \nTerm structure with an added spread on the zero yield rate  \n-\nql.ZeroSpreadedTermStructure(\n*YieldTermStructure*,*spread*)  \n```\ncrv = ql.FlatForward(ql.Date(10,1,2020),0.04875825,ql.Actual365Fixed())\nyts = ql.YieldTermStructureHandle(crv)\nspread = ql.QuoteHandle(ql."
+      },
+      {
+        "source": "termstructures.md",
+        "preview": "# Term Structures  \nQuantLib provides a module for the representation of different term structures used in Quantitative Finance. A term structure describe the evolution of any variable defined across maturities. Mathematically a term structure describe the stochastic evolution of a variable , indexe"
+      },
+      {
+        "source": "basics.md",
+        "preview": "# Basics  \nBelow are the commands to set up the QuantLib with evaluation date. Everything starts with “evaluation date” which means the date you want to value a instrument (for more info see The global evaluation Date). Consider you want to value a “Swap” as of 09/16/2020, you will first set the eva"
+      },
+      {
+        "source": "termstructures.md",
+        "preview": "### ForwardSpreadedTermStructure  \nTerm structure with added spread on the instantaneous forward rate.  \n-\nql.ForwardSpreadedTermStructure(\n*YieldTermStructure*,*spread*)  \n```\ncrv = ql.FlatForward(ql.Date(10,1,2020),0.04875825,ql.Actual365Fixed())\nyts = ql.YieldTermStructureHandle(crv)\nspread = ql."
+      }
+    ]
+  },
+  "quote_only||k=5||how can i bootstrap a zero curve from market instruments in quantlib": {
+    "question_en": "How can I bootstrap a zero curve from market instruments in QuantLib?",
+    "answer_en": "To bootstrap a zero curve from market instruments in QuantLib, you can use the `ZeroCurve` class. Here's an example of how to create a zero curve with a given set of dates and yields:\n\n```python\nimport QuantLib as ql\n\n# Set up the evaluation date\ntoday = ql.Date(15,6,2020)\nql.Settings.instance().evaluationDate = today\n\n# Define the dates and yields for the zero curve\ndates = [ql.Date(31,12,2019), ql.Date(31,12,2020), ql.Date(31,12,2021)]\nzeros = [0.01, 0.02, 0.03]\n\n# Create the zero curve using the dates and yields\nzero_curve = ql.ZeroCurve(dates, zeros, ql.ActualActual(), ql.UnitedStates(), ql.Linear(), ql.Compounded, ql.Semiannual)\n```\n\nIn this example, the zero curve is created using the Actual/Actual day count convention, United States calendar, and linear interpolation. You can adjust these parameters according to your specific needs.",
+    "sources": [
+      {
+        "source": "termstructures.md",
+        "preview": "### ZeroCurve  \nZeroCurve  \nLogLinearZeroCurve  \nCubicZeroCurve  \nNaturalCubicZeroCurve  \nLogCubicZeroCurve  \nMonotonicCubicZeroCurve  \n-\nql.ZeroCurve(\n*dates*,*yields*,*dayCounter*,*cal*,*i*,*comp*,*freq*)  \nDates |\nThe date sequence, the maturity date corresponding to the zero interest rate. Note:"
+      },
+      {
+        "source": "basics.md",
+        "preview": "## Observable  \n```\nimport QuantLib as ql\nflag = None\ndef raiseFlag():\nglobal flag\nflag = 1\nme = ql.SimpleQuote(0.0)\nobs = ql.Observer(raiseFlag)\nobs.registerWith(me)\nme.setValue(3.14)\nif not flag:\nprint(\"Case 1: Observer was not notified of market element change\")\nflag = None\nobs.unregisterWith(me)"
+      },
+      {
+        "source": "termstructures.md",
+        "preview": "## Inflation Term Structures  \n### ZeroInflationCurve  \n-\nql.PiecewiseZeroInflation(\n*referenceDate*,*calendar*,*dayCounter*,*observationLag*,*frequency*,*bool indexIsInterpolated*,*baseZeroRate*,*nominalTS*,*helpers*,*accuracy=1.0e-12*,*interpolator=ql.Linear()*)"
+      },
+      {
+        "source": "basics.md",
+        "preview": "# Basics  \nBelow are the commands to set up the QuantLib with evaluation date. Everything starts with “evaluation date” which means the date you want to value a instrument (for more info see The global evaluation Date). Consider you want to value a “Swap” as of 09/16/2020, you will first set the eva"
+      },
+      {
+        "source": "termstructures.md",
+        "preview": "## Yield Term Structures  \n-\n*class*YieldTermStructure Abstract base class for interest-rate term structures.  \nThis class defines the interface for all concrete interest rate term structures in QuantLib. It is not meant to be instantiated directly, but provides the common API for all yield curve ob"
+      }
+    ]
+  },
+  "quote_only||k=5||how do i set the evaluation date in quantlib": {
+    "question_en": "How do I set the evaluation date in QuantLib?",
+    "answer_en": "To set the evaluation date in QuantLib, you can use the `ql.Settings` class and its `instance()` method to access the singleton instance of the settings object. Then, you can set the evaluation date using the `evaluationDate` attribute. Here's an example:\n\n```python\nimport QuantLib as ql\n\n# Let today date when we want to value a instrument be\ntoday = ql.Date(15,6,2020)\n\n# Set evaluation date in QL\nql.Settings.instance().evaluationDate = today\n```\n\nThis code sets the evaluation date to June 15th, 2020. You can replace the date parameters as needed for your specific use case.",
+    "sources": [
+      {
+        "source": "basics.md",
+        "preview": "# Basics  \nBelow are the commands to set up the QuantLib with evaluation date. Everything starts with “evaluation date” which means the date you want to value a instrument (for more info see The global evaluation Date). Consider you want to value a “Swap” as of 09/16/2020, you will first set the eva"
+      },
+      {
+        "source": "indexes.md",
+        "preview": "### IborIndex  \n-\n*class*IborIndex(*familyName: str*,*tenor: ql.Period*,*settlementDays: int*,*currency: ql.Currency*,*fixingCalendar: ql.Calendar*,*convention: ql.Convention*,*endOfMonth: bool*,*dayCounter: ql.DayCounter*,*h: ql.YieldTermStructureHandle = ql.YieldTermStructureHandle()*) Base class "
+      },
+      {
+        "source": "indexes.md",
+        "preview": "## Interest Rate  \nIn the following block there are going to be listed all the classes that are subclasses of the `InterestRateIndex`  \nclass.\n`InterestRateIndex`  \nclass itself if a child class of the `Index`  \nclass and serves as the abstract base for all interest rate indexes in QuantLib, includi"
+      },
+      {
+        "source": "dates.md",
+        "preview": "## Calendar  \nThe class ql.Calendar provides the interface for determining whether a date is a business day or a holiday for a given exchange or a given country, and for incrementing/decrementing a date of a given number of business days.  \n**Available Calendars**  \nArgentina, Australia, Austria, Be"
+      },
+      {
+        "source": "dates.md",
+        "preview": "## Date  \n**Constructors**  \n-\nql.Date(\n*serialNumber*)  \nserialNumber is an integer, such as 24214, and 1 corresponds to 1899-12-31. The usage is the same as in Excel. (The range of serialNumber is limited to 367 to 109574, and the corresponding date range is 1901-01-01 to 2199-12-31.)  \n```\nql.Dat"
+      }
+    ]
+  },
+  "quote_only||k=5||how can i configure the evaluation date when using quantlib": {
+    "question_en": "How can I configure the evaluation date when using QuantLib?",
+    "answer_en": "To configure the evaluation date when using QuantLib, you can set it using the `evaluationDate` attribute of the `ql.Settings` instance. Here's an example:\n\n```python\nimport QuantLib as ql\n\n# Let today date be June 15th, 2020\ntoday = ql.Date(15,6,2020)\n\n# Set evaluation date in QuantLib\nql.Settings.instance().evaluationDate = today\n```\n\nThis will set the evaluation date to June 15th, 2020. You can replace `today` with any desired date.",
+    "sources": [
+      {
+        "source": "basics.md",
+        "preview": "# Basics  \nBelow are the commands to set up the QuantLib with evaluation date. Everything starts with “evaluation date” which means the date you want to value a instrument (for more info see The global evaluation Date). Consider you want to value a “Swap” as of 09/16/2020, you will first set the eva"
+      },
+      {
+        "source": "indexes.md",
+        "preview": "### IborIndex  \n-\n*class*IborIndex(*familyName: str*,*tenor: ql.Period*,*settlementDays: int*,*currency: ql.Currency*,*fixingCalendar: ql.Calendar*,*convention: ql.Convention*,*endOfMonth: bool*,*dayCounter: ql.DayCounter*,*h: ql.YieldTermStructureHandle = ql.YieldTermStructureHandle()*) Base class "
+      },
+      {
+        "source": "indexes.md",
+        "preview": "## IndexManager  \nTo avoid discrepancies between the indexes themselves QuantLib employes a unique global repository for the various registered indexes under the `IndexManager`  \nclass.\n`IndexManager`  \nbasically stores for each index added a timeseries of the past fixings.  \nThe public methods that"
+      },
+      {
+        "source": "dates.md",
+        "preview": "## Calendar  \nThe class ql.Calendar provides the interface for determining whether a date is a business day or a holiday for a given exchange or a given country, and for incrementing/decrementing a date of a given number of business days.  \n**Available Calendars**  \nArgentina, Australia, Austria, Be"
+      },
+      {
+        "source": "indexes.md",
+        "preview": "## Interest Rate  \nIn the following block there are going to be listed all the classes that are subclasses of the `InterestRateIndex`  \nclass.\n`InterestRateIndex`  \nclass itself if a child class of the `Index`  \nclass and serves as the abstract base for all interest rate indexes in QuantLib, includi"
+      }
+    ]
+  },
+  "quote_only||k=5||how to build a flatforward yield curve in quantlib": {
+    "question_en": "How to build a FlatForward yield curve in QuantLib?",
+    "answer_en": "To build a FlatForward yield curve in QuantLib, you can use the `ql.FlatForward` class. Here's an example of how to create a FlatForward yield curve with a fixed rate and day counter:\n\n```python\nimport QuantLib as ql\n\n# Set the evaluation date (e.g., June 15th, 2020)\ntoday = ql.Date(15,6,2020)\nql.Settings.instance().evaluationDate = today\n\n# Create a FlatForward yield curve with a fixed rate and day counter (Actual360)\nflat_forward_curve = ql.FlatForward(today, ql.QuoteHandle(ql.SimpleQuote(0.05)), ql.Actual360())\n```\n\nIn this example, the FlatForward yield curve is created with a fixed rate of 5% (0.05) and Actual/360 day counter. You can adjust the evaluation date, rate, and day counter according to your needs.",
+    "sources": [
+      {
+        "source": "termstructures.md",
+        "preview": "### FlatForward  \nFlat interest-rate curve.  \n-\nql.FlatForward(\n*date*,*quote*,*dayCounter*,*compounding*,*frequency*)  \n-\nql.FlatForward(\n*integer*,*Calendar*,*quote*,*dayCounter*,*compounding*,*frequency*)  \n-\nql.FlatForward(\n*integer*,*rate*,*dayCounter*)  \nExamples:  \n```\nql.FlatForward(ql.Date("
+      },
+      {
+        "source": "termstructures.md",
+        "preview": "## Yield Term Structures  \n-\n*class*YieldTermStructure Abstract base class for interest-rate term structures.  \nThis class defines the interface for all concrete interest rate term structures in QuantLib. It is not meant to be instantiated directly, but provides the common API for all yield curve ob"
+      },
+      {
+        "source": "termstructures.md",
+        "preview": "### PiecewiseLinearForwardSpreadedTermStructure  \nRepresents a yield term structure constructed by applying a piecewise-linear interpolation of **forward-rate** spreads to an existing base curve.\nThe resulting forward rate at any date is the base curve’s forward rate plus the interpolated spread at "
+      },
+      {
+        "source": "termstructures.md",
+        "preview": "### ForwardSpreadedTermStructure  \nTerm structure with added spread on the instantaneous forward rate.  \n-\nql.ForwardSpreadedTermStructure(\n*YieldTermStructure*,*spread*)  \n```\ncrv = ql.FlatForward(ql.Date(10,1,2020),0.04875825,ql.Actual365Fixed())\nyts = ql.YieldTermStructureHandle(crv)\nspread = ql."
+      },
+      {
+        "source": "basics.md",
+        "preview": "# Basics  \nBelow are the commands to set up the QuantLib with evaluation date. Everything starts with “evaluation date” which means the date you want to value a instrument (for more info see The global evaluation Date). Consider you want to value a “Swap” as of 09/16/2020, you will first set the eva"
+      }
+    ]
+  },
+  "quote_only||k=5||who is lionel messi": {
+    "question_en": "Who is Lionel Messi",
+    "answer_en": "Based on the provided documentation, I cannot answer who Lionel Messi is as there is no information about him in the context you've shared. The context only contains examples related to QuantLib-Python for creating various types of financial instruments such as Basket Options, Barrier Options, and Legs.",
+    "sources": [
+      {
+        "source": "cashflows.md",
+        "preview": "### LognormalCmsSpreadPricer"
+      },
+      {
+        "source": "instruments.md",
+        "preview": "### Basket Options  \n-\nql.BasketOption(\n*payoff*,*exercise*)  \nPayoff Types:  \nql.MinBasketPayoff(payoff)  \nql.AverageBasketPayoff(payoff, numInstruments)  \nql.MaxBasketPayoff(payoff)  \n```\ntoday = ql.Date().todaysDate()\nexp_date = today + ql.Period(1, ql.Years)\nstrike = 100\nnumber_of_underlyings = "
+      },
+      {
+        "source": "pricing_engines.md",
+        "preview": "### Barrier Options  \n#### BinomialBarrierEngine  \n-\nql.BinomialBarrierEngine(\n*process*,*type*,*steps*)  \n```\ntoday = ql.Date().todaysDate()\nspotHandle = ql.QuoteHandle(ql.SimpleQuote(100))\nflatRateTs = ql.YieldTermStructureHandle(ql.FlatForward(today, 0.05, ql.Actual365Fixed()))\nflatVolTs = ql.Bla"
+      },
+      {
+        "source": "instruments.md",
+        "preview": "### Barrier Options  \n-\nql.BarrierOption(\n*barrierType*,*barrier*,*rebate*,*payoff*,*exercise*)  \nBarrier Types:  \nql.Barrier.UpIn  \nql.Barrier.UpOut  \nql.Barrier.DownIn  \nql.Barrier.DownOut  \n```\nT = 1\nK = 100.\nbarrier = 110.\nrebate = 0.\nbarrierType = ql.Barrier.UpOut\ntoday = ql.Date().todaysDate()"
+      },
+      {
+        "source": "cashflows.md",
+        "preview": "## Legs  \n### Leg  \n```\ndate = ql.Date().todaysDate()\ncf1 = ql.SimpleCashFlow(5.0, date+365)\ncf2 = ql.SimpleCashFlow(5.0, date+365*2)\ncf3 = ql.SimpleCashFlow(105.0, date+365*3)\nleg = ql.Leg([cf1, cf2, cf3])\n```"
+      }
+    ]
+  },
+  "quote_only||k=5||give a quantlib-python example of building a flat yield curve using flatforward": {
+    "question_en": "Give a QuantLib-Python example of building a flat yield curve using FlatForward.",
+    "answer_en": "To build a flat yield curve using `FlatForward` in QuantLib-Python, you can use the following example:\n\n```python\nimport QuantLib as ql\n\n# Define dates for the yield curve\ndates = [ql.Date(15,6,2020), ql.Date(15,6,2022), ql.Date(15,6,2023)]\n\n# Define yields (flat rates) for each date\nrates = [0.02, 0.03, 0.04]\n\n# Create a flat yield curve using Actual/360 day count convention and TARGET calendar\nyield_curve = ql.ForwardCurve(dates, rates, ql.Actual360(), ql.TARGET())\n```\n\nThis code creates a flat yield curve with three points at the specified dates and yields. The `ForwardCurve` class interpolates the yield curve using flat interpolation by default.",
+    "sources": [
+      {
+        "source": "termstructures.md",
+        "preview": "### FlatForward  \nFlat interest-rate curve.  \n-\nql.FlatForward(\n*date*,*quote*,*dayCounter*,*compounding*,*frequency*)  \n-\nql.FlatForward(\n*integer*,*Calendar*,*quote*,*dayCounter*,*compounding*,*frequency*)  \n-\nql.FlatForward(\n*integer*,*rate*,*dayCounter*)  \nExamples:  \n```\nql.FlatForward(ql.Date("
+      },
+      {
+        "source": "termstructures.md",
+        "preview": "### PiecewiseLinearForwardSpreadedTermStructure  \nRepresents a yield term structure constructed by applying a piecewise-linear interpolation of **forward-rate** spreads to an existing base curve.\nThe resulting forward rate at any date is the base curve’s forward rate plus the interpolated spread at "
+      },
+      {
+        "source": "termstructures.md",
+        "preview": "## Yield Term Structures  \n-\n*class*YieldTermStructure Abstract base class for interest-rate term structures.  \nThis class defines the interface for all concrete interest rate term structures in QuantLib. It is not meant to be instantiated directly, but provides the common API for all yield curve ob"
+      },
+      {
+        "source": "termstructures.md",
+        "preview": "### ForwardSpreadedTermStructure  \nTerm structure with added spread on the instantaneous forward rate.  \n-\nql.ForwardSpreadedTermStructure(\n*YieldTermStructure*,*spread*)  \n```\ncrv = ql.FlatForward(ql.Date(10,1,2020),0.04875825,ql.Actual365Fixed())\nyts = ql.YieldTermStructureHandle(crv)\nspread = ql."
+      },
+      {
+        "source": "termstructures.md",
+        "preview": "### ForwardCurve  \nTerm structure based on flat interpolation of forward rates.  \n-\nql.ForwardCurve(\n*dates*,*rates*,*dayCounter*)  \n-\nql.ForwardCurve(\n*dates*,*rates*,*dayCounter*,*calendar*,*BackwardFlat*)  \n-\nql.ForwardCurve(\n*dates*,*date*,*rates*,*rate*,*dayCounter*,*calendar*)  \n-\nql.ForwardCu"
+      }
+    ]
+  }
+}

@@ -1,0 +1,296 @@
+backend,question,gold_source,hit_at_k,faithfulness,helpfulness,judge_notes,latency_retrieval_ms,latency_llm_ms,overlap_percent,api_only_in_answer,answer_en
+local,How do I set up the evaluation date in QuantLib?,basics.md,1,,,judge_skipped,362.1056079864502,0.16188621520996094,81.25,[],"To set up the evaluation date in QuantLib, you can use the `ql.Settings.instance().evaluationDate` method. Here's an example of how to do it:
+
+```python
+import QuantLib as ql
+
+# Let today date when we want to value a instrument be
+today = ql.Date(15,6,2020)
+
+# We can set evaluationDate in QL as
+ql.Settings.instance().evaluationDate = today
+```
+
+This will set the evaluation date to June 15th, 2020. You can replace the `today` variable with any desired date."
+local,Which core QuantLib types are typically used when starting a simple pricing example?,basics.md,1,,,judge_skipped,158.27417373657227,0.20813941955566406,89.04109589041096,[],"When starting a simple pricing example in QuantLib-Python, typically the following core types are used:
+
+1. Settings: To set up the evaluation date using `ql.Settings.instance().evaluationDate = today` where `today` is a `ql.Date`.
+
+2. InterestRateIndex: As the base class for all interest rate indexes in QuantLib, including IBOR and overnight indexes. It provides common interface for all interest rate indexes such as Ibor and Overnight indexes.
+
+3. IborIndex: Base class for Interbank Offered Rate (IBOR) indexes. It is used to create specific IBOR indexes like Euribor or Libor.
+
+4. InterestRate: A concrete interest rate class that represents the value of the rate of return, day calculation rule, interest rate method, and frequency of interest payments."
+local,How do I create a QuantLib Date and convert it from a Python datetime?,dates.md,1,,,judge_skipped,128.10587882995605,0.1938343048095703,82.6086956521739,[],"To create a QuantLib Date and convert it from a Python datetime, you can use the following methods:
+
+1. Convert Python datetime to QuantLib Date using the `ql.Date` constructor with the format string:
+
+```python
+from datetime import datetime
+date_str = '09/16/2020'  # your Python datetime string
+date_obj = ql.Date(date_str, '%m/%d/%Y')  # create QuantLib Date object
+```
+
+2. Set the evaluation date in QuantLib using the created `date_obj`:
+
+```python
+today = date_obj
+ql.Settings.instance().evaluationDate = today
+print(ql.Settings.instance().evaluationDate)  # prints the set evaluation date
+```"
+local,How can I advance a date by a given number of months using QuantLib?,dates.md,1,,,judge_skipped,126.69563293457031,0.19621849060058594,76.25,[],"To advance a date by a given number of months using QuantLib, you can use the `DateGeneration` functionality to generate a schedule of dates for a specific period. Here's an example of how to create a schedule with monthly periods starting from a certain date and advancing by a specified number of months:
+
+```python
+import QuantLib as ql
+
+# Set evaluation date
+today = ql.Date(15,6,2020)
+ql.Settings.instance().evaluationDate = today
+
+# Define start and end dates
+start_date = ql.Date(7,5,2020)
+num_months = 3
+end_date = start_date + ql.Period(ql.Months(num_months))
+
+# Generate a schedule of monthly dates
+rules = {
+    'Backward': ql.DateGeneration.Backward,
+    'Forward': ql.DateGeneration.Forward,
+    'Zero': ql.DateGeneration.Zero,
+    'ThirdWednesDay': ql.DateGeneration.ThirdWednesday,
+    'Twentieth': ql.DateGeneration.Twentieth,
+    'TwentiethIMM': ql.DateGeneration.TwentiethIMM,
+    'CDS': ql.DateGeneration.CDS
+}
+schedule = ql.MakeSchedule(start_date, end_date, rules['Backward'])
+```
+
+In this example, we generate a schedule of monthly dates starting from May 7th, 2020 and advancing by 3 months using the 'Backward' rule. You can adjust the start date, number of months, and date generation rule to suit your needs."
+local,How do I build a leg of fixed cashflows in QuantLib?,cashflows.md,1,,,judge_skipped,130.7535171508789,0.20122528076171875,77.14285714285715,[],"To build a leg of fixed cashflows in QuantLib, you can use the `FixedRateLeg` helper class as shown in the provided context:
+
+```python
+import QuantLib as ql
+
+# Set evaluation date
+today = ql.Date(15,6,2020)
+ql.Settings.instance().evaluationDate = today
+
+# Schedule, day count, nominals, fixed rate, business day convention, first period day counter, ex-coupon period, payment calendar
+schedule = ql.MakeSchedule(ql.Date(15,6,2020), ql.Date(15,6,2021), ql.Period('6M'))
+dayCount = ql.Actual360()
+leg = ql.FixedRateLeg(schedule, dayCount, [100.], [0.05])
+```
+
+In this example, a fixed rate leg is created with one period (6 months) from June 15th, 2020 to June 15th, 2021, having a fixed rate of 5%, and a notional amount of 100."
+local,How can I get the payment dates and amounts from a cashflow leg in QuantLib?,cashflows.md,1,,,judge_skipped,150.62665939331055,0.1919269561767578,71.21212121212122,[],"To get the payment dates and amounts from a cashflow leg in QuantLib, you can use the `ql.CashFlows.startDate()`, `ql.CashFlows.maturityDate()`, `ql.CashFlows.nextCashFlowDate()` and `ql.CashFlows.previousCashFlowDate()` functions.
+
+First, let's create a leg with some cashflows:
+
+```python
+import QuantLib as ql
+
+date = ql.Date().todaysDate()
+cf1 = ql.SimpleCashFlow(5.0, date+365)
+cf2 = ql.SimpleCashFlow(5.0, date+365*2)
+cf3 = ql.SimpleCashFlow(105.0, date+365*3)
+leg = ql.Leg([cf1, cf2, cf3])
+```
+
+Now, let's get the start and maturity dates of the leg:
+
+```python
+start_date = ql.CashFlows.startDate(leg)
+maturity_date = ql.CashFlows.maturityDate(leg)
+print(""Start Date:"", start_date)
+print(""Maturity Date:"", maturity_date)
+```
+
+To get the next and previous payment dates, you can use the following functions:
+
+```python
+next_payment_date = ql.CashFlows.nextCashFlowDate(leg, True)
+previous_payment_date = ql.CashFlows.previousCashFlowDate(leg, True)
+print(""Next Payment Date:"", next_payment_date)
+print(""Previous Payment Date:"", previous_payment_date)
+```
+
+To get the amount of a specific cashflow, you can access it directly from the leg:
+
+```python
+cf = leg[1]  # Accessing the second cashflow in the leg
+amount = cf.amount()
+print(""Amount:"", amount)
+```"
+local,How do I construct an IborIndex in QuantLib?,indexes.md,1,,,judge_skipped,159.90424156188965,0.18525123596191406,79.71014492753623,"['ql.Months', 'ql.Unadjusted', 'ql.ActualActual']","To construct an IborIndex in QuantLib, you can use the provided `IborIndex` class. Here's a basic example of how to create an IborIndex:
+
+```python
+import QuantLib as ql
+
+# Set the evaluation date
+today = ql.Date(15,6,2020)
+ql.Settings.instance().evaluationDate = today
+
+# Create an IborIndex instance
+ibor_index = ql.IborIndex(""Euribor"", ql.Period(90, ql.Months), 0, ql.Currency.EUR, ql.UnitedStates::ISDA, ql.Unadjusted, ql.ActualActual(), None)
+```
+
+In this example, we are creating an Euribor index with a tenor of 3 months (90 days), no settlement days, Euro currency, using the ISDA calendar for fixing dates, and Actual/Actual day count convention."
+local,How can I link an index to a yield term structure in QuantLib?,indexes.md,1,,,judge_skipped,143.4013843536377,0.16808509826660156,65.71428571428571,['ql.InterestRateIndex'],"To link an index to a yield term structure in QuantLib, you can use the `YieldTermStructureHandle` class. This class allows you to store a handle to a yield term structure and associate it with a quote handle for a spread. Here's an example:
+
+```python
+# Import necessary classes
+import QuantLib as ql
+
+# Create a FlatForward yield curve
+ref_date = ql.Date(10, 1, 2020)
+rate = 0.04875825
+discount_curve = ql.YieldTermStructureHandle(ql.FlatForward(ref_date, rate, ql.Actual365Fixed()))
+
+# Create an index with a family name (replace 'MyIndex' with the actual index name)
+index = ql.InterestRateIndex('MyIndex')
+
+# Create a handle for the index and the spread
+spread_handle = ql.QuoteHandle(ql.SimpleQuote(0.005))
+zero_spreaded_curve = ql.ZeroSpreadedTermStructure(discount_curve, spread_handle)
+```
+
+In this example, `MyIndex` is a placeholder for the actual index you want to use. The `ZeroSpreadedTermStructure` class is used to create a term structure with an added spread on the zero yield rate, which is linked to the `MyIndex`."
+local,How do I create a simple fixed-rate bond instrument in QuantLib?,instruments.md,0,,,judge_skipped,136.84678077697754,0.2315044403076172,77.17391304347827,"['ql.Days', 'ql.ActualActual', 'ql.Bond', 'ql.FixedRateCoupon', 'ql.Schedule', 'ql.USD']","To create a simple fixed-rate bond instrument in QuantLib, you can use the `FixedRateCoupon` class and the `Bond` class. Here's an example of how to create a fixed-rate bond:
+
+```python
+import QuantLib as ql
+
+# Set evaluation date
+today = ql.Date(15,6,2020)
+ql.Settings.instance().evaluationDate = today
+
+# Define the bond parameters
+settlement_days = 0
+day_counter = ql.ActualActual()
+calendar = ql.UnitedStates()
+discount_curve = ... # YieldTermStructureHandle for discounting, not provided in context
+
+# Define the IborIndex (e.g., 3-month Libor)
+ibor_index = ql.IborIndex(""Libor"", ql.Period(90, ql.Days), settlement_days, ql.USD(), calendar, ql.Actual360(), False, day_counter)
+
+# Define the fixed-rate coupon
+coupon = ql.FixedRateCoupon(0.05 / 100, ql.Semiannual)
+
+# Define the schedule for the bond's cash flows
+schedule = ql.Schedule(today, today + ql.Period(5 * 365, ql.Days), ql.Period(6 * 365 / 2, ql.Semiannual), calendar, day_counter)
+
+# Create the bond with the defined parameters
+bond = ql.Bond(coupon, schedule, 1000, schedule[-1].endDate(), discount_curve)
+```
+
+In this example, we create a fixed-rate bond with a face value of $1000, a coupon rate of 5%, semi-annual payments, and a maturity of 5 years. The bond uses the 3-month Libor index for discounting its cash flows."
+local,How can I retrieve the NPV of an instrument after assigning a pricing engine in QuantLib?,instruments.md,0,,,judge_skipped,126.00851058959961,0.18930435180664062,74.28571428571429,[],"To retrieve the NPV (Net Present Value) of an instrument after assigning a pricing engine in QuantLib, you can use the `computeNPV` method provided by the `QuantExt` module. Here's how to set up the environment and calculate the NPV for a Forward European option:
+
+```python
+import QuantLib as ql
+
+today = ql.Date().todaysDate()
+riskFreeTS = ql.YieldTermStructureHandle(ql.FlatForward(today, 0.05, ql.Actual365Fixed()))
+dividendTS = ql.YieldTermStructureHandle(ql.FlatForward(today, 0.01, ql.Actual365Fixed()))
+volatility = ql.BlackVolTermStructureHandle(ql.BlackConstantVol(today, ql.NullCalendar(), 0.1, ql.Actual365Fixed()))
+initialValue = ql.QuoteHandle(ql.SimpleQuote(100))
+process = ql.BlackScholesMertonProcess(initialValue, dividendTS, riskFreeTS, volatility)
+engine = ql.ForwardEuropeanEngine(process)
+
+# Assuming you have a Forward European option instrument
+forwardOption = ...
+forwardOption.setPricingEngine(engine)
+
+npv = forwardOption.NPV()
+print(""NPV:"", npv)
+```"
+local,How do I set a discounting bond pricing engine in QuantLib?,pricing_engines.md,1,,,judge_skipped,125.90885162353516,0.1881122589111328,78.57142857142857,[],"To set a discounting bond pricing engine in QuantLib, you can use the `DiscountingBondEngine` class. Here's an example:
+
+```python
+import QuantLib as ql
+
+# Let the today date when we want to value a instrument be
+today = ql.Date(15,6,2020)
+
+# Set evaluation date in QuantLib
+ql.Settings.instance().evaluationDate = today
+
+# Create a yield term structure (discount curve)
+crv = ql.FlatForward(ql.Date().todaysDate(),0.04875825,ql.Actual365Fixed())
+yts = ql.YieldTermStructureHandle(crv)
+
+# Create a discounting bond pricing engine using the yield term structure
+engine = ql.DiscountingBondEngine(yts)
+```
+
+In this example, we first set the evaluation date to the desired date (June 15th, 2020). Then, we create a flat discount curve and a `YieldTermStructureHandle` object using that curve. Finally, we create a `DiscountingBondEngine` instance with the yield term structure handle. This engine can be used to price discounting bonds."
+local,Which pricing engines are commonly used for bond and swap pricing in QuantLib?,pricing_engines.md,1,,,judge_skipped,155.29608726501465,0.2238750457763672,83.75,[],"The commonly used pricing engines for bond and swap pricing in QuantLib are:
+
+1. DiscountingSwapEngine: This engine is used for discounting swaps. It requires a YieldTermStructure as an argument.
+
+```python
+yts = ql.YieldTermStructureHandle(ql.FlatForward(2, ql.TARGET(), 0.5, ql.Actual360()))
+engine = ql.DiscountingSwapEngine(yts)
+```
+
+2. BachelierSwaptionEngine: This engine is used for pricing swaptions. It can take a YieldTermStructure, Quote, or SwaptionVolatilityStructure as arguments.
+
+```python
+bachelierEngine = ql.BachelierSwaptionEngine(yts, ql.QuoteHandle(ql.SimpleQuote(0.0055)))
+swaption.setPricingEngine(bachelierEngine)
+swaption.NPV()
+```
+
+For pricing forward options, QuantLib provides the ForwardEuropeanEngine and MCForwardEuropeanBSEngine.
+
+1. ForwardEuropeanEngine: This engine implements the C++ engine QuantLib::ForwardVanillaEngine. It requires a process as an argument.
+
+```python
+today = ql.Date().todaysDate()
+riskFreeTS = ql.YieldTermStructureHandle(ql.FlatForward(today, 0.05, ql.Actual365Fixed()))
+dividendTS = ql.YieldTermStructureHandle(ql.FlatForward(today, 0.01, ql.Actual365Fixed()))
+volatility = ql.BlackVolTermStructureHandle(ql.BlackConstantVol(today, ql.NullCalendar(), 0.1, ql.Actual365Fixed()))
+initialValue = ql.QuoteHandle(ql.SimpleQuote(100))
+process = ql.BlackScholesMertonProcess(initialValue, dividendTS, riskFreeTS, volatility)
+engine = ql.ForwardEuropeanEngine(process)
+```
+
+2. MCForwardEuropeanBSEngine: This engine is used for Monte Carlo simulation of forward European options. It requires a process as an argument."
+local,How do I build a flat yield term structure in QuantLib?,termstructures.md,1,,,judge_skipped,118.36791038513184,0.2052783966064453,82.6086956521739,[],"To build a flat yield term structure in QuantLib-Python, you can use the `FlatForward` class which is a child of `YieldTermStructure`. Here's an example:
+
+```python
+import QuantLib as ql
+
+# Set the evaluation date
+today = ql.Date(15,6,2020)
+ql.Settings.instance().evaluationDate = today
+
+# Create a flat yield curve with a fixed rate and day-count convention
+rate = 0.04875825
+day_count_convention = ql.Actual365Fixed()
+discount_curve_date = ql.Date(10,1,2020)
+discount_curve = ql.FlatForward(discount_curve_date, rate, day_count_convention)
+
+# Create a handle for the discount curve
+yield_term_structure_handle = ql.YieldTermStructureHandle(discount_curve)
+```
+
+In this example, we create a flat yield curve with a fixed rate of 0.04875825 and a day-count convention of `Actual365Fixed()`. The discount curve is evaluated as of the date `10/1/2020`. You can adjust these parameters according to your needs."
+local,How can I bootstrap a zero curve from market instruments in QuantLib?,termstructures.md,1,,,judge_skipped,160.2332592010498,0.1926422119140625,82.27848101265823,['ql.Semiannual'],"To bootstrap a zero curve from market instruments in QuantLib, you can use the `ZeroCurve` class. Here's an example of how to create a zero curve with a given set of dates and yields:
+
+```python
+import QuantLib as ql
+
+# Set up the evaluation date
+today = ql.Date(15,6,2020)
+ql.Settings.instance().evaluationDate = today
+
+# Define the dates and yields for the zero curve
+dates = [ql.Date(31,12,2019), ql.Date(31,12,2020), ql.Date(31,12,2021)]
+zeros = [0.01, 0.02, 0.03]
+
+# Create the zero curve using the dates and yields
+zero_curve = ql.ZeroCurve(dates, zeros, ql.ActualActual(), ql.UnitedStates(), ql.Linear(), ql.Compounded, ql.Semiannual)
+```
+
+In this example, the zero curve is created using the Actual/Actual day count convention, United States calendar, and linear interpolation. You can adjust these parameters according to your specific needs."
