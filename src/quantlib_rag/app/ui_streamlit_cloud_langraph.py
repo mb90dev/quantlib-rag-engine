@@ -1,11 +1,49 @@
 # src/quantlib_rag/app/ui_streamlit_cloud_qdrant.py
 
 import os
+import hmac
 import streamlit as st
 
 from src.quantlib_rag.rag.quantlib_cloud_assistant import QuantLibCloudAssistant
 from src.quantlib_rag.rag.llm_groq import create_groq_llm
 from src.quantlib_rag.graph.guarded_rag import GuardedQuantLibRAG
+
+
+def check_password() -> bool:
+    """
+    Simple password gate for Streamlit apps.
+    - password is stored in st.secrets["APP_PASSWORD"] or env APP_PASSWORD
+    - uses constant-time compare (hmac.compare_digest)
+    - keeps auth state in st.session_state
+    """
+    if st.session_state.get("authenticated", False):
+        return True
+
+    # Read password from Streamlit Secrets or environment
+    expected = None
+    try:
+        expected = st.secrets.get("APP_PASSWORD", None)
+    except Exception:
+        expected = None
+
+    expected = expected or os.environ.get("APP_PASSWORD")
+
+    if not expected:
+        st.error("APP_PASSWORD is not configured. Set it in Streamlit Secrets or as env var.")
+        st.stop()
+
+    st.markdown("### 🔒 Enter password to access this app")
+    pwd = st.text_input("Password", type="password")
+
+    if st.button("Login"):
+        if hmac.compare_digest(pwd, expected):
+            st.session_state["authenticated"] = True
+            st.rerun()
+        else:
+            st.error("Wrong password.")
+            st.session_state["authenticated"] = False
+
+    return False
 
 
 def get_cloud_assistant() -> QuantLibCloudAssistant:
@@ -40,10 +78,23 @@ def get_guarded_cloud_pipeline() -> GuardedQuantLibRAG:
 
 
 def main():
+    # ✅ set_page_config TYLKO RAZ, na początku
     st.set_page_config(
         page_title="QuantLib RAG — Cloud (Groq + Gemini + Qdrant)",
         layout="wide",
     )
+
+    # ✅ PASSWORD GATE NA START
+    if not check_password():
+        st.stop()
+
+    # ✅ Logout w sidebarze
+    with st.sidebar:
+        st.markdown("### Session")
+        if st.button("Logout"):
+            st.session_state["authenticated"] = False
+            st.rerun()
+
     st.title("📘 QuantLib RAG — Cloud profile")
 
     st.markdown(
